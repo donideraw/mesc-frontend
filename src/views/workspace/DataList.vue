@@ -42,7 +42,7 @@
           </CCol>
           <CCol md="7">
             <div v-if="isAdmin()">
-              <CButton color="primary" class="float-end" @click="exportToExcel">
+              <CButton color="primary" class="float-end" @click="() => { showModalDownload = true }">
                 <CIcon icon="cil-cloud-download" />
               </CButton>
             </div>
@@ -728,6 +728,30 @@
           </CRow>
         </CModalBody>
       </CModal>
+      <CModal alignment="center" :visible="showModalDownload" @close="() => { showModalDownload = false }">
+        <CModalHeader>
+          <CModalTitle>Download Data</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CRow>
+            <CCol md="8">
+              <p>Which format you want to download ?</p>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md="3"></CCol>
+            <CCol md="3">
+              <CButton @click="exportToExcel(true)" color="primary" variant="outline">Horizontal
+              </CButton>
+            </CCol>
+            <CCol md="3">
+              <CButton @click="exportToExcel(false)" color="primary" variant="outline">Vertical
+              </CButton>
+            </CCol>
+            <CCol md="3"></CCol>
+          </CRow>
+        </CModalBody>
+      </CModal>
     </div>
   </div>
 </template>
@@ -754,6 +778,7 @@ export default {
       linkReference: '',
       showModal: false,
       showModalView: false,
+      showModalDownload: false,
       dataList: [],
       file: null,
       issuer: '',
@@ -1029,8 +1054,8 @@ export default {
         other: ''
       }
     },
-    exportToExcel() {
-      const pageSize = 6000; // Number of rows per page/chunk
+    exportToExcel(isHorizontal) {
+      const pageSize = isHorizontal ? 999999 : 6000; // Number of rows per page/chunk
       let page = 0; // Current page number
 
       LoadIndicator("Downloading data...");
@@ -1038,13 +1063,16 @@ export default {
       const workbook = XLSX.utils.book_new(); // Create the workbook outside the loop
 
       const exportPage = () => {
-        axiosInstance.post('/base', {
+        axiosInstance.post('/base/download', {
           page: page,
           size: pageSize,
           search: ''
         })
             .then((response) => {
-              const worksheet = XLSX.utils.json_to_sheet(this.modifyJSONDataTypeB(response.data.data.data));
+              const worksheet = XLSX.utils.json_to_sheet(
+                  isHorizontal ? this.modifyJSONDataTypeA(response.data.data.data) :
+                  this.modifyJSONDataTypeB(response.data.data.data)
+              );
               const workbook = XLSX.utils.book_new();
               XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
               const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -1056,31 +1084,19 @@ export default {
                 exportPage(); // Export next page
               } else {
                 Swal.close();
+                this.showModalDownload = false
               }
             })
             .catch((error) => {
               // Handle error
               console.log(error)
               Swal.close();
+              this.showModalDownload = false
             });
       };
 
       exportPage(); // Start exporting the first page
     },
-    // exportToExcel() {
-    //   LoadIndicator("Downloading data...")
-    //
-    //   axiosInstance.get('/base')
-    //       .then((response) => {
-    //         const worksheet = XLSX.utils.json_to_sheet(this.modifyJSONDataTypeB(response.data.data));
-    //         const workbook = XLSX.utils.book_new();
-    //         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
-    //         const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    //
-    //         this.downloadExcelFile(excelBuffer, 'Report - ' + new Date().toLocaleDateString() + '.xlsx');
-    //         Swal.close()
-    //       })
-    // },
     downloadExcelFile(buffer, fileName) {
       const data = new Blob([buffer], { type: 'application/octet-stream' });
       const url = URL.createObjectURL(data);
