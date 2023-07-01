@@ -68,7 +68,6 @@
           </CCol>
         </CRow>
         <br/>
-        <p>*perlu ada delete apa engga</p>
         <CTable align="middle" class="mb-0 border" hover responsive>
           <CTableHead color="light">
             <CTableRow>

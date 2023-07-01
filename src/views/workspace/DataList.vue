@@ -149,7 +149,7 @@
                   <CCardHeader>
                     <CRow>
                       <CCol md="9">
-                        <strong>Material - {{selectedData.dataId}} -</strong>
+                        <strong>Material - {{selectedData.dataId}}</strong>
                       </CCol>
                       <CCol md="3">
                         <div v-if="selectedData.status == 'UPLOADED'">
@@ -181,10 +181,21 @@
                     </CListGroupItem>
                     <CListGroupItem><strong>Old Material:</strong> -</CListGroupItem>
                     <CListGroupItem><strong>Description:</strong><p @mouseup="handleSelect">{{selectedData.description}}</p></CListGroupItem>
-                    <CListGroupItem><strong>MPN:</strong> </CListGroupItem>
+                    <CListGroupItem><strong>MPN:</strong> {{dataDetail.mpn}}</CListGroupItem>
                     <CListGroupItem>
-                      <strong>PO Text:</strong>
-                      <br /><br />
+                      <CRow>
+                        <CCol md="3">
+                          <strong>PO Text:</strong>
+                        </CCol>
+                        <CCol md="9">
+                          <CFormSwitch
+                              id="formSwitchCheckDefault"
+                              :label="autoCopyEnabled ? 'auto-copy enabled' : 'auto-copy disabled'"
+                              @input="autoCopyEnabled = !autoCopyEnabled"
+                              v-model="autoCopyEnabled"
+                          />
+                        </CCol>
+                      </CRow>
                       <CCard color="light">
                         <CCardBody>
                           <div class="text-container">
@@ -224,14 +235,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mescNumber"
+                        v-model="mescNumber"
                         label="1-MESC-NUMBER"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mescShortDesc"
+                        v-model="mescShortDesc"
                         label="2-MESC-SHORT-DESC"
                         type="text"
                     />
@@ -241,14 +252,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.partName"
+                        v-model="partName"
                         label="3-PART-NAME"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mpn"
+                        v-model="mpn"
                         label="4-MPN"
                         type="text"
                     />
@@ -258,14 +269,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mfr"
+                        v-model="mfr"
                         label="5-MFR"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.dimensiRatingPart"
+                        v-model="dimensiRatingPart"
                         label="6-DIMENSI-RATING-PART"
                         type="text"
                     />
@@ -275,14 +286,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.materialPart"
+                        v-model="materialPart"
                         label="7-MATERIAL-PART"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.partFor"
+                        v-model="partFor"
                         label="8-PART-FOR"
                         type="text"
                     />
@@ -292,14 +303,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqModel"
+                        v-model="eqModel"
                         label="9-EQ-MODEL"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.assemblyLoc"
+                        v-model="assemblyLoc"
                         label="10-ASSEMBLY-LOC"
                         type="text"
                     />
@@ -309,14 +320,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqSizeDimension"
+                        v-model="eqSizeDimension"
                         label="11-EQ-SIZE-DIMENSION"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqMaterial"
+                        v-model="eqMaterial"
                         label="12-EQ-MATERIAL"
                         type="text"
                     />
@@ -326,14 +337,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqSerialNum"
+                        v-model="eqSerialNum"
                         label="13-EQ-SERIAL-NUM"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqPositionNum"
+                        v-model="eqPositionNum"
                         label="14-EQ-POSITION-NUM"
                         type="text"
                     />
@@ -343,14 +354,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqDwgNum"
+                        v-model="eqDwgNum"
                         label="15-EQ-DWG-NUM"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mfrOcmPartNum"
+                        v-model="mfrOcmPartNum"
                         label="16-MFR-OCM-PART-NUM"
                         type="text"
                     />
@@ -360,14 +371,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.mfrOcm"
+                        v-model="mfrOcm"
                         label="17-MFR-OCM"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqPtmnDwgNum"
+                        v-model="eqPtmnDwgNum"
                         label="18-EQ-PTMN-DWG-NUM"
                         type="text"
                     />
@@ -377,14 +388,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqProjNum"
+                        v-model="eqProjNum"
                         label="19-EQ-PROJ-NUM"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqOrderNumber"
+                        v-model="eqOrderNumber"
                         label="20-EQ-ORDER NUMBER"
                         type="text"
                     />
@@ -394,14 +405,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqTagNum"
+                        v-model="eqTagNum"
                         label="21-EQ-TAG-NUM"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.eqDocNum"
+                        v-model="eqDocNum"
                         label="22-EQ-DOC-NUM"
                         type="text"
                     />
@@ -411,14 +422,14 @@
                 <CRow>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.buildYear"
+                        v-model="buildYear"
                         label="23-BUILD-YEAR"
                         type="text"
                     />
                   </CCol>
                   <CCol md="6">
                     <CFormInput
-                        v-model="dataDetail.shippingParticularCode"
+                        v-model="shippingParticularCode"
                         label="24-SHIPPING-PARTICULAR-CODE"
                         type="text"
                     />
@@ -428,7 +439,7 @@
                 <CRow>
                   <CCol md="12">
                     <CFormInput
-                        v-model="dataDetail.other"
+                        v-model="other"
                         label="25-OTHER"
                         type="text"
                     />
@@ -454,7 +465,7 @@
       </div>
       <CModal size="lg" alignment="center" :visible="showModalView" @close="() => { showModalView = false }">
         <CModalHeader>
-          <strong>Material - {{selectedData.dataId}} -</strong>
+          <strong>Material - {{selectedData.dataId}}</strong>
         </CModalHeader>
         <CModalBody>
           <CRow>
@@ -463,6 +474,7 @@
                   v-model="selectedData.jsonData.mescNumber"
                   label="1-MESC-NUMBER"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -470,6 +482,7 @@
                   v-model="selectedData.jsonData.mescShortDesc"
                   label="2-MESC-SHORT-DESC"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -480,6 +493,7 @@
                   v-model="selectedData.jsonData.partName"
                   label="3-PART-NAME"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -487,6 +501,7 @@
                   v-model="selectedData.jsonData.mpn"
                   label="4-MPN"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -497,6 +512,7 @@
                   v-model="selectedData.jsonData.mfr"
                   label="5-MFR"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -504,6 +520,7 @@
                   v-model="selectedData.jsonData.dimensiRatingPart"
                   label="6-DIMENSI-RATING-PART"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -514,6 +531,7 @@
                   v-model="selectedData.jsonData.materialPart"
                   label="7-MATERIAL-PART"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -521,6 +539,7 @@
                   v-model="selectedData.jsonData.partFor"
                   label="8-PART-FOR"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -531,6 +550,7 @@
                   v-model="selectedData.jsonData.eqModel"
                   label="9-EQ-MODEL"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -538,6 +558,7 @@
                   v-model="selectedData.jsonData.assemblyLoc"
                   label="10-ASSEMBLY-LOC"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -548,6 +569,7 @@
                   v-model="selectedData.jsonData.eqSizeDimension"
                   label="11-EQ-SIZE-DIMENSION"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -555,6 +577,7 @@
                   v-model="selectedData.jsonData.eqMaterial"
                   label="12-EQ-MATERIAL"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -565,6 +588,7 @@
                   v-model="selectedData.jsonData.eqSerialNum"
                   label="13-EQ-SERIAL-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -572,6 +596,7 @@
                   v-model="selectedData.jsonData.eqPositionNum"
                   label="14-EQ-POSITION-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -582,6 +607,7 @@
                   v-model="selectedData.jsonData.eqDwgNum"
                   label="15-EQ-DWG-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -589,6 +615,7 @@
                   v-model="selectedData.jsonData.mfrOcmPartNum"
                   label="16-MFR-OCM-PART-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -599,6 +626,7 @@
                   v-model="selectedData.jsonData.mfrOcm"
                   label="17-MFR-OCM"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -606,6 +634,7 @@
                   v-model="selectedData.jsonData.eqPtmnDwgNum"
                   label="18-EQ-PTMN-DWG-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -616,6 +645,7 @@
                   v-model="selectedData.jsonData.eqProjNum"
                   label="19-EQ-PROJ-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -623,6 +653,7 @@
                   v-model="selectedData.jsonData.eqOrderNumber"
                   label="20-EQ-ORDER NUMBER"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -633,6 +664,7 @@
                   v-model="selectedData.jsonData.eqTagNum"
                   label="21-EQ-TAG-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -640,6 +672,7 @@
                   v-model="selectedData.jsonData.eqDocNum"
                   label="22-EQ-DOC-NUM"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -650,6 +683,7 @@
                   v-model="selectedData.jsonData.buildYear"
                   label="23-BUILD-YEAR"
                   type="text"
+                  readonly
               />
             </CCol>
             <CCol md="6">
@@ -657,6 +691,7 @@
                   v-model="selectedData.jsonData.shippingParticularCode"
                   label="24-SHIPPING-PARTICULAR-CODE"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
@@ -667,17 +702,38 @@
                   v-model="selectedData.jsonData.other"
                   label="25-OTHER"
                   type="text"
+                  readonly
               />
             </CCol>
           </CRow>
           <br />
           <CRow>
             <CCol md="12">
-              <CFormInput
+              <CFormLabel for="commentField"
+              >Comment</CFormLabel
+              >
+              <CFormTextarea
+                  id="commentField"
+                  rows="3"
                   v-model="comment"
-                  label="Comment"
-                  type="text"
-              />
+              ></CFormTextarea>
+<!--              <CFormInput-->
+<!--                  v-model="comment"-->
+<!--                  label="Comment"-->
+<!--                  type="text"-->
+<!--                  rows="3"-->
+<!--              />-->
+            </CCol>
+          </CRow>
+          <br />
+          <CRow>
+            <CCol md="8"></CCol>
+            <CCol md="4">
+              <CButton size="sm" color="danger" variant="outline" @click="requestChangeData"> Request For Change</CButton>
+              &nbsp;&nbsp;
+<!--            </CCol>-->
+<!--            <CCol md="2">-->
+              <CButton size="sm" color="primary" @click="verifyData">Submit</CButton>
             </CCol>
           </CRow>
         </CModalBody>
@@ -770,6 +826,7 @@ export default {
       currentPage: 0,
       itemsPerPage: 5,
       totalPage: 0,
+      autoCopyEnabled: true,
       paginationCurrentNumber: [1,2,3],
       selectedIndex: null,
       selectedData: {},
@@ -842,9 +899,6 @@ export default {
     }
   },
   methods: {
-    handleSwitchChange() {
-      this.switchValue = !this.switchValue
-    },
     changePage(page) {
       this.currentPage = page
       this.getData()
@@ -915,6 +969,7 @@ export default {
       this.selectedData = this.dataList[index]
       this.manufacturer = this.selectedData.issuer
       this.showModalView = true
+      this.comment = this.selectedData.comment
     },
     expandData(index) {
       this.clearData()
@@ -957,7 +1012,7 @@ export default {
     },
     handleSelect() {
       const text = window.getSelection().toString()
-      if (text != '') {
+      if (this.autoCopyEnabled && text != '') {
         this.selectedText = text
         this.showModal = true
       }
@@ -965,7 +1020,6 @@ export default {
     putToForm(key) {
       this.dataDetail[key] = this.selectedText
       this.showModal = false
-      console.log(this.dataDetail.partFor)
     },
     isAdmin() {
       return localStorage.getItem('role') === 'ADMIN'
@@ -1009,6 +1063,54 @@ export default {
 
       axiosInstance
           .post('/base/submit', data)
+          .then(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Data submitted successfully!',
+            })
+            this.getData()
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to submit data',
+            })
+          })
+    },
+    requestChangeData() {
+      const data = {
+        dataId: this.selectedData.dataId,
+        comment: this.comment
+      }
+
+      axiosInstance
+          .post('/base/request', data)
+          .then(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'Data submitted successfully!',
+            })
+            this.getData()
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to submit data',
+            })
+          })
+    },
+    verifyData() {
+      const data = {
+        dataId: this.selectedData.dataId,
+        comment: this.comment
+      }
+
+      axiosInstance
+          .post('/base/approve', data)
           .then(() => {
             Swal.fire({
               icon: 'success',
@@ -1159,6 +1261,208 @@ export default {
       this.getData()
       Swal.close()
     }
+  },
+  computed: {
+    mescNumber: {
+      get() {
+        return this.dataDetail.mescNumber.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mescNumber = value.toUpperCase();
+      }
+    },
+    mescShortDesc: {
+      get() {
+        return this.dataDetail.mescShortDesc.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mescShortDesc = value.toUpperCase();
+      }
+    },
+    partName: {
+      get() {
+        return this.dataDetail.partName.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.partName = value.toUpperCase();
+      }
+    },
+    mpn: {
+      get() {
+        return this.dataDetail.mpn.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mpn = value.toUpperCase();
+      }
+    },
+    mfr: {
+      get() {
+        return this.dataDetail.mfr.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mfr = value.toUpperCase();
+      }
+    },
+    dimensiRatingPart: {
+      get() {
+        return this.dataDetail.dimensiRatingPart.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.dimensiRatingPart = value.toUpperCase();
+      }
+    },
+    materialPart: {
+      get() {
+        return this.dataDetail.materialPart.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.materialPart = value.toUpperCase();
+      }
+    },
+    partFor: {
+      get() {
+        return this.dataDetail.partFor.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.partFor = value.toUpperCase();
+      }
+    },
+    eqModel: {
+      get() {
+        return this.dataDetail.eqModel.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqModel = value.toUpperCase();
+      }
+    },
+    assemblyLoc: {
+      get() {
+        return this.dataDetail.assemblyLoc.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.assemblyLoc = value.toUpperCase();
+      }
+    },
+    eqSizeDimension: {
+      get() {
+        return this.dataDetail.eqSizeDimension.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqSizeDimension = value.toUpperCase();
+      }
+    },
+    eqMaterial: {
+      get() {
+        return this.dataDetail.eqMaterial.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqMaterial = value.toUpperCase();
+      }
+    },
+    eqSerialNum: {
+      get() {
+        return this.dataDetail.eqSerialNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqSerialNum = value.toUpperCase();
+      }
+    },
+    eqPositionNum: {
+      get() {
+        return this.dataDetail.eqPositionNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqPositionNum = value.toUpperCase();
+      }
+    },
+    eqDwgNum: {
+      get() {
+        return this.dataDetail.eqDwgNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqDwgNum = value.toUpperCase();
+      }
+    },
+    mfrOcmPartNum: {
+      get() {
+        return this.dataDetail.mfrOcmPartNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mfrOcmPartNum = value.toUpperCase();
+      }
+    },
+    mfrOcm: {
+      get() {
+        return this.dataDetail.mfrOcm.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.mfrOcm = value.toUpperCase();
+      }
+    },
+    eqPtmnDwgNum: {
+      get() {
+        return this.dataDetail.eqPtmnDwgNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqPtmnDwgNum = value.toUpperCase();
+      }
+    },
+    eqProjNum: {
+      get() {
+        return this.dataDetail.eqProjNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqProjNum = value.toUpperCase();
+      }
+    },
+    eqOrderNumber: {
+      get() {
+        return this.dataDetail.eqOrderNumber.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqOrderNumber = value.toUpperCase();
+      }
+    },
+    eqTagNum: {
+      get() {
+        return this.dataDetail.eqTagNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqTagNum = value.toUpperCase();
+      }
+    },
+    eqDocNum: {
+      get() {
+        return this.dataDetail.eqDocNum.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.eqDocNum = value.toUpperCase();
+      }
+    },
+    buildYear: {
+      get() {
+        return this.dataDetail.buildYear.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.buildYear = value.toUpperCase();
+      }
+    },
+    shippingParticularCode: {
+      get() {
+        return this.dataDetail.shippingParticularCode.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.shippingParticularCode = value.toUpperCase();
+      }
+    },
+    other: {
+      get() {
+        return this.dataDetail.other.toUpperCase();
+      },
+      set(value) {
+        this.dataDetail.other = value.toUpperCase();
+      }
+    },
   }
 }
 </script>
