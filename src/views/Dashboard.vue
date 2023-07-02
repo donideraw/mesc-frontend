@@ -10,27 +10,11 @@
         <CWidgetStatsA class="mb-4" color="primary">
           <template #value
           >{{dashboardData.totalTask}}
-            <span class="fs-6 fw-normal">
-            (-12.4% <CIcon icon="cil-arrow-bottom"/>)
-          </span>
+<!--            <span class="fs-6 fw-normal">-->
+<!--            (-12.4% <CIcon icon="cil-arrow-bottom"/>)-->
+<!--          </span>-->
           </template>
           <template #title>Total Task Data</template>
-          <template #action>
-            <CDropdown placement="bottom-end">
-              <CDropdownToggle
-                  :caret="false"
-                  class="p-0 text-white"
-                  color="transparent"
-              >
-                <CIcon class="text-high-emphasis-inverse" icon="cil-options"/>
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem href="#">Action</CDropdownItem>
-                <CDropdownItem href="#">Another action</CDropdownItem>
-                <CDropdownItem href="#">Something else here</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
-          </template>
           <template #chart>
             <CChart
                 :data="{
@@ -49,7 +33,7 @@
                   backgroundColor: 'transparent',
                   borderColor: 'rgba(255,255,255,.55)',
                   pointBackgroundColor: '#321fdb',
-                  data: [68, 59, 84, 84, 51, 55, 40],
+                  data: [10, 11, 12, 13, 14, 15, 16],
                 },
               ],
             }"
@@ -105,27 +89,8 @@
         <CWidgetStatsA class="mb-4" color="warning">
           <template #value
           >{{dashboardData.totalAssigned}}
-            <span class="fs-6 fw-normal">
-            (-12.4% <CIcon icon="cil-arrow-bottom"/>)
-          </span>
           </template>
           <template #title>Assigned To You</template>
-          <template #action>
-            <CDropdown placement="bottom-end">
-              <CDropdownToggle
-                  :caret="false"
-                  class="p-0 text-white"
-                  color="transparent"
-              >
-                <CIcon class="text-high-emphasis-inverse" icon="cil-options"/>
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem href="#">Action</CDropdownItem>
-                <CDropdownItem href="#">Another action</CDropdownItem>
-                <CDropdownItem href="#">Something else here</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
-          </template>
           <template #chart>
             <CChart
                 :data="{
@@ -144,7 +109,7 @@
                   backgroundColor: 'transparent',
                   borderColor: 'rgba(255,255,255,.55)',
                   pointBackgroundColor: '#321fdb',
-                  data: [68, 59, 84, 84, 51, 55, 40],
+                  data: [0, 0, 0, 0, 0, 0, 0],
                 },
               ],
             }"
@@ -200,27 +165,11 @@
         <CWidgetStatsA class="mb-4" color="success">
           <template #value
           >{{dashboardData.totalCompleted}}
-            <span class="fs-6 fw-normal">
-            (-12.4% <CIcon icon="cil-arrow-bottom"/>)
-          </span>
+<!--            <span class="fs-6 fw-normal">-->
+<!--            (-12.4% <CIcon icon="cil-arrow-bottom"/>)-->
+<!--          </span>-->
           </template>
           <template #title>Total Completed Task</template>
-          <template #action>
-            <CDropdown placement="bottom-end">
-              <CDropdownToggle
-                  :caret="false"
-                  class="p-0 text-white"
-                  color="transparent"
-              >
-                <CIcon class="text-high-emphasis-inverse" icon="cil-options"/>
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem href="#">Action</CDropdownItem>
-                <CDropdownItem href="#">Another action</CDropdownItem>
-                <CDropdownItem href="#">Something else here</CDropdownItem>
-              </CDropdownMenu>
-            </CDropdown>
-          </template>
           <template #chart>
             <CChart
                 :data="{
@@ -239,7 +188,7 @@
                   backgroundColor: 'transparent',
                   borderColor: 'rgba(255,255,255,.55)',
                   pointBackgroundColor: '#321fdb',
-                  data: [68, 59, 84, 84, 51, 55, 40],
+                  data: [0, 0, 0, 0, 0, 0, 0],
                 },
               ],
             }"
@@ -292,6 +241,78 @@
         </CWidgetStatsA>
       </CCol>
     </CRow>
+    <CRow>
+      <CCol md="6">
+        <CCard>
+          <CCardHeader><strong>To Do</strong></CCardHeader>
+          <CCardBody>
+            <CTable align="middle" class="mb-0 border" hover responsive>
+              <CTableHead color="light">
+                <CTableRow>
+                  <CTableHeaderCell class="text-center" color="primary">Material</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Manufacturer</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary"
+                  >Status
+                  </CTableHeaderCell
+                  >
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                <CTableRow v-for="item in todoList" :key="item.dataId">
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.dataId }}</div>
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.issuer }}</div>
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.status }}</div>
+                  </CTableDataCell>
+                </CTableRow>
+                <CTableRow></CTableRow>
+              </CTableBody>
+            </CTable>
+          </CCardBody>
+        </CCard>
+      </CCol>
+      <CCol md="6">
+        <CCard>
+          <CCardHeader><strong>Request For Change</strong></CCardHeader>
+          <CCardBody>
+            <CTable align="middle" class="mb-0 border" hover responsive>
+              <CTableHead color="light">
+                <CTableRow>
+                  <CTableHeaderCell class="text-center" color="primary">Material</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Manufacturer</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary"
+                  >Status
+                  </CTableHeaderCell
+                  >
+                  <CTableHeaderCell class="text-center" color="primary">Requester</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                <CTableRow v-for="item in requestedList" :key="item.dataId">
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.dataId }}</div>
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.issuer }}</div>
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.status }}</div>
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    <div>{{ item.checkedBy }}</div>
+                  </CTableDataCell>
+                </CTableRow>
+                <CTableRow></CTableRow>
+              </CTableBody>
+            </CTable>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   </div>
 </template>
 
@@ -307,15 +328,18 @@ export default {
   data() {
     return {
       name: '',
-      dashboardData: {}
+      dashboardData: {},
+      todoList: [],
+      requestedList: []
     }
   },
   methods: {
     getDashboardData() {
       axiosInstance.get('/base/dashboard')
           .then((response) => {
-            console.log(response.data)
             this.dashboardData = response.data.data
+            this.todoList = response.data.data.todo
+            this.requestedList = response.data.data.requested
           })
     }
   },

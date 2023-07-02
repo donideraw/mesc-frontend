@@ -133,7 +133,7 @@
     <div ref="cardComponent">
       <div v-if="isStaff()">
         <CCard class="mb-4">
-          <CCardHeader>Material Master - Spareparts</CCardHeader>
+          <CCardHeader>Material Master</CCardHeader>
           <CCardBody>
             <CRow>
               <CCol md="5">
@@ -179,7 +179,7 @@
                         </CCol>
                       </CRow>
                     </CListGroupItem>
-                    <CListGroupItem><strong>Old Material:</strong> -</CListGroupItem>
+<!--                    <CListGroupItem><strong>Old Material:</strong> -</CListGroupItem>-->
                     <CListGroupItem><strong>Description:</strong><p @mouseup="handleSelect">{{selectedData.description}}</p></CListGroupItem>
                     <CListGroupItem><strong>MPN:</strong> {{dataDetail.mpn}}</CListGroupItem>
                     <CListGroupItem>
@@ -205,7 +205,7 @@
                       </CCard>
                       <br />
                     </CListGroupItem>
-                    <CListGroupItem><strong>Noun Modif:</strong> </CListGroupItem>
+                    <CListGroupItem><strong>Noun Modifier: </strong>SPAREPARTS</CListGroupItem>
                     <CListGroupItem>
                       <CRow>
                         <CCol md="12">
@@ -717,12 +717,6 @@
                   rows="3"
                   v-model="comment"
               ></CFormTextarea>
-<!--              <CFormInput-->
-<!--                  v-model="comment"-->
-<!--                  label="Comment"-->
-<!--                  type="text"-->
-<!--                  rows="3"-->
-<!--              />-->
             </CCol>
           </CRow>
           <br />
@@ -731,8 +725,6 @@
             <CCol md="4">
               <CButton size="sm" color="danger" variant="outline" @click="requestChangeData"> Request For Change</CButton>
               &nbsp;&nbsp;
-<!--            </CCol>-->
-<!--            <CCol md="2">-->
               <CButton size="sm" color="primary" @click="verifyData">Submit</CButton>
             </CCol>
           </CRow>
