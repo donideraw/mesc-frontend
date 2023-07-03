@@ -63,7 +63,7 @@
               <CTableHeaderCell class="text-center">Manufacturer</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Description</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Assignee</CTableHeaderCell>
-              <CTableHeaderCell class="text-center">Date Uploaded</CTableHeaderCell>
+              <CTableHeaderCell class="text-center">Noun Modifier</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Status</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Action</CTableHeaderCell>
             </CTableRow>
@@ -88,7 +88,7 @@
                 <div v-else>Not assigned</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div>{{ formatDate(item.uploadedAt) }}</div>
+                <div>{{ item.typeId }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
                 <div v-if="item.status == 'UPLOADED'">
@@ -179,9 +179,7 @@
                         </CCol>
                       </CRow>
                     </CListGroupItem>
-<!--                    <CListGroupItem><strong>Old Material:</strong> -</CListGroupItem>-->
                     <CListGroupItem><strong>Description:</strong><p @mouseup="handleSelect">{{selectedData.description}}</p></CListGroupItem>
-                    <CListGroupItem><strong>MPN:</strong> {{dataDetail.mpn}}</CListGroupItem>
                     <CListGroupItem>
                       <CRow>
                         <CCol md="3">
@@ -205,7 +203,7 @@
                       </CCard>
                       <br />
                     </CListGroupItem>
-                    <CListGroupItem><strong>Noun Modifier: </strong>SPAREPARTS</CListGroupItem>
+                    <CListGroupItem><strong>Noun Modifier: </strong>{{ activeFormType.typeId }}</CListGroupItem>
                     <CListGroupItem>
                       <CRow>
                         <CCol md="12">
@@ -233,219 +231,16 @@
                 </CRow>
                 <br />
                 <CRow>
-                  <CCol md="6">
+                  <CCol md="6" v-for="(item, index) in dataFormList">
                     <CFormInput
-                        v-model="mescNumber"
-                        label="1-MESC-NUMBER"
+                        v-model="dataDetail[item.key]"
+                        :label="(index+1) + '-' + item.tagName"
+                        placeholder="Input data..."
                         type="text"
                     />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="mescShortDesc"
-                        label="2-MESC-SHORT-DESC"
-                        type="text"
-                    />
+                    <br />
                   </CCol>
                 </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="partName"
-                        label="3-PART-NAME"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="mpn"
-                        label="4-MPN"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="mfr"
-                        label="5-MFR"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="dimensiRatingPart"
-                        label="6-DIMENSI-RATING-PART"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="materialPart"
-                        label="7-MATERIAL-PART"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="partFor"
-                        label="8-PART-FOR"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqModel"
-                        label="9-EQ-MODEL"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="assemblyLoc"
-                        label="10-ASSEMBLY-LOC"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqSizeDimension"
-                        label="11-EQ-SIZE-DIMENSION"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqMaterial"
-                        label="12-EQ-MATERIAL"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqSerialNum"
-                        label="13-EQ-SERIAL-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqPositionNum"
-                        label="14-EQ-POSITION-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqDwgNum"
-                        label="15-EQ-DWG-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="mfrOcmPartNum"
-                        label="16-MFR-OCM-PART-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="mfrOcm"
-                        label="17-MFR-OCM"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqPtmnDwgNum"
-                        label="18-EQ-PTMN-DWG-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqProjNum"
-                        label="19-EQ-PROJ-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqOrderNumber"
-                        label="20-EQ-ORDER NUMBER"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqTagNum"
-                        label="21-EQ-TAG-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="eqDocNum"
-                        label="22-EQ-DOC-NUM"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="buildYear"
-                        label="23-BUILD-YEAR"
-                        type="text"
-                    />
-                  </CCol>
-                  <CCol md="6">
-                    <CFormInput
-                        v-model="shippingParticularCode"
-                        label="24-SHIPPING-PARTICULAR-CODE"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="12">
-                    <CFormInput
-                        v-model="other"
-                        label="25-OTHER"
-                        type="text"
-                    />
-                  </CCol>
-                </CRow>
-                <br />
                 <CRow>
                   <CCol md="3">
                     <CButton  color="secondary" @click="saveAsDraft" :disabled="selectedData.status != 'ASSIGNED'">
@@ -468,266 +263,6 @@
           <strong>Material - {{selectedData.dataId}}</strong>
         </CModalHeader>
         <CModalBody>
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mescNumber"
-                  label="1-MESC-NUMBER"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mescShortDesc"
-                  label="2-MESC-SHORT-DESC"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.partName"
-                  label="3-PART-NAME"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mpn"
-                  label="4-MPN"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mfr"
-                  label="5-MFR"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.dimensiRatingPart"
-                  label="6-DIMENSI-RATING-PART"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.materialPart"
-                  label="7-MATERIAL-PART"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.partFor"
-                  label="8-PART-FOR"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqModel"
-                  label="9-EQ-MODEL"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.assemblyLoc"
-                  label="10-ASSEMBLY-LOC"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqSizeDimension"
-                  label="11-EQ-SIZE-DIMENSION"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqMaterial"
-                  label="12-EQ-MATERIAL"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqSerialNum"
-                  label="13-EQ-SERIAL-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqPositionNum"
-                  label="14-EQ-POSITION-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqDwgNum"
-                  label="15-EQ-DWG-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mfrOcmPartNum"
-                  label="16-MFR-OCM-PART-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.mfrOcm"
-                  label="17-MFR-OCM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqPtmnDwgNum"
-                  label="18-EQ-PTMN-DWG-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqProjNum"
-                  label="19-EQ-PROJ-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqOrderNumber"
-                  label="20-EQ-ORDER NUMBER"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqTagNum"
-                  label="21-EQ-TAG-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.eqDocNum"
-                  label="22-EQ-DOC-NUM"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.buildYear"
-                  label="23-BUILD-YEAR"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-            <CCol md="6">
-              <CFormInput
-                  v-model="selectedData.jsonData.shippingParticularCode"
-                  label="24-SHIPPING-PARTICULAR-CODE"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="12">
-              <CFormInput
-                  v-model="selectedData.jsonData.other"
-                  label="25-OTHER"
-                  type="text"
-                  readonly
-              />
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="12">
-              <CFormLabel for="commentField"
-              >Comment</CFormLabel
-              >
-              <CFormTextarea
-                  id="commentField"
-                  rows="3"
-                  v-model="comment"
-              ></CFormTextarea>
-            </CCol>
-          </CRow>
-          <br />
-          <CRow>
-            <CCol md="8"></CCol>
-            <CCol md="4">
-              <CButton size="sm" color="danger" variant="outline" @click="requestChangeData"> Request For Change</CButton>
-              &nbsp;&nbsp;
-              <CButton size="sm" color="primary" @click="verifyData">Submit</CButton>
-            </CCol>
-          </CRow>
         </CModalBody>
       </CModal>
       <CModal alignment="center" :visible="showModal" @close="() => { showModal = false }">
@@ -735,45 +270,6 @@
           <CModalTitle>Add "{{selectedText}}" to :</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CRow>
-            <CButtonGroup role="group" aria-label="Basic example">
-              <CButton @click="putToForm('mescNumber')" color="primary" variant="outline">1</CButton>
-              <CButton @click="putToForm('mescShortDesc')" color="primary" variant="outline">2</CButton>
-              <CButton @click="putToForm('partName')" color="primary" variant="outline">3</CButton>
-              <CButton @click="putToForm('mpn')" color="primary" variant="outline">4</CButton>
-              <CButton @click="putToForm('mfr')" color="primary" variant="outline">5</CButton>
-              <CButton @click="putToForm('dimensiRatingPart')" color="primary" variant="outline">6</CButton>
-              <CButton @click="putToForm('materialPart')" color="primary" variant="outline">7</CButton>
-              <CButton @click="putToForm('partFor')" color="primary" variant="outline">8</CButton>
-              <CButton @click="putToForm('eqModel')" color="primary" variant="outline">9</CButton>
-            </CButtonGroup>
-          </CRow>
-          <br />
-          <CRow>
-            <CButtonGroup role="group" aria-label="Basic example">
-              <CButton @click="putToForm('assemblyLoc')" color="primary" variant="outline">10</CButton>
-              <CButton @click="putToForm('eqSizeDimension')" color="primary" variant="outline">11</CButton>
-              <CButton @click="putToForm('eqMaterial')" color="primary" variant="outline">12</CButton>
-              <CButton @click="putToForm('eqSerialNum')" color="primary" variant="outline">13</CButton>
-              <CButton @click="putToForm('eqPositionNum')" color="primary" variant="outline">14</CButton>
-              <CButton @click="putToForm('eqDwgNum')" color="primary" variant="outline">15</CButton>
-              <CButton @click="putToForm('mfrOcmPartNum')" color="primary" variant="outline">16</CButton>
-              <CButton @click="putToForm('mfrOcm')" color="primary" variant="outline">17</CButton>
-            </CButtonGroup>
-          </CRow>
-          <br />
-          <CRow>
-            <CButtonGroup role="group" aria-label="Basic example">
-              <CButton @click="putToForm('eqPtmnDwgNum')" color="primary" variant="outline">18</CButton>
-              <CButton @click="putToForm('eqProjNum')" color="primary" variant="outline">19</CButton>
-              <CButton @click="putToForm('eqOrderNumber')" color="primary" variant="outline">20</CButton>
-              <CButton @click="putToForm('eqTagNum')" color="primary" variant="outline">21</CButton>
-              <CButton @click="putToForm('eqDocNum')" color="primary" variant="outline">22</CButton>
-              <CButton @click="putToForm('buildYear')" color="primary" variant="outline">23</CButton>
-              <CButton @click="putToForm('shippingParticularCode')" color="primary" variant="outline">24</CButton>
-              <CButton @click="putToForm('other')" color="primary" variant="outline">25</CButton>
-            </CButtonGroup>
-          </CRow>
         </CModalBody>
       </CModal>
       <CModal alignment="center" :visible="showModalDownload" @close="() => { showModalDownload = false }">
@@ -816,7 +312,7 @@ export default {
   data() {
     return {
       currentPage: 0,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       totalPage: 0,
       autoCopyEnabled: true,
       paginationCurrentNumber: [1,2,3],
@@ -834,60 +330,9 @@ export default {
       switchValue: false,
       comment: '',
       keyword: '',
-      dataDetail: {
-        mescNumber: '',
-        mescShortDesc: '',
-        partName: '',
-        mpn: '',
-        mfr: '',
-        dimensiRatingPart: '',
-        materialPart: '',
-        partFor: '',
-        eqModel: '',
-        assemblyLoc: '',
-        eqSizeDimension: '',
-        eqMaterial: '',
-        eqSerialNum: '',
-        eqPositionNum: '',
-        eqDwgNum: '',
-        mfrOcmPartNum: '',
-        mfrOcm: '',
-        eqPtmnDwgNum: '',
-        eqProjNum: '',
-        eqOrderNumber: '',
-        eqTagNum: '',
-        eqDocNum: '',
-        buildYear: '',
-        shippingParticularCode: '',
-        other: ''
-      },
-      tagName: {
-        mescNumber: '1-MESC-NUMBER',
-        mescShortDesc: '2-MESC-SHORT-DESC',
-        partName: '3-PART-NAME',
-        mpn: '4-MPN',
-        mfr: '5-MFR',
-        dimensiRatingPart: '6-DIMENSI-RATING-PART',
-        materialPart: '7-MATERIAL-PART',
-        partFor: '8-PART-FOR',
-        eqModel: '9-EQ-MODEL',
-        assemblyLoc: '10-ASSEMBLY-LOC',
-        eqSizeDimension: '11-EQ-SIZE-DIMENSION',
-        eqMaterial: '12-EQ-MATERIAL',
-        eqSerialNum: '13-EQ-SERIAL-NUM',
-        eqPositionNum: '14-EQ-POSITION-NUM',
-        eqDwgNum: '15-EQ-DWG-NUM',
-        mfrOcmPartNum: '16-MFR-OCM-PART-NUM',
-        mfrOcm: '17-MFR-OCM',
-        eqPtmnDwgNum: '18-EQ-PTMN-DWG-NUM',
-        eqProjNum: '19-EQ-PROJ-NUM',
-        eqOrderNumber: '20-EQ-ORDER-NUMBER',
-        eqTagNum: '21-EQ-TAG-NUM',
-        eqDocNum: '22-EQ-DOC-NUM',
-        buildYear: '23-BUILD-YEAR',
-        shippingParticularCode: '24-SHIPPING-PARTICULAR-CODE',
-        other: '25-OTHER'
-      },
+      dataDetail: {},
+      dataFormList: [],
+      activeFormType: {}
     }
   },
   methods: {
@@ -967,12 +412,26 @@ export default {
       this.clearData()
       this.selectedIndex = index
       this.selectedData = this.dataList[index]
-      const jsonData = this.selectedData.jsonData
-      this.manufacturer = this.selectedData.issuer
-      this.linkReference = this.selectedData.reference
-      if (jsonData) {
-        this.dataDetail = jsonData
-      }
+
+      axiosInstance.get('/type/' + this.dataList[index].typeId)
+          .then((response) => {
+            this.activeFormType = response.data.data
+            this.dataFormList = response.data.data.attributes
+            if (this.dataList[index].jsonData) {
+              this.dataDetail = this.dataList[index].jsonData
+            } else {
+              this.dataDetail = response.data.data.jsonFormat
+            }
+          })
+
+      // this.selectedIndex = index
+      // this.selectedData = this.dataList[index]
+      // const jsonData = this.selectedData.jsonData
+      // this.manufacturer = this.selectedData.issuer
+      // this.linkReference = this.selectedData.reference
+      // if (jsonData) {
+      //   this.dataDetail = jsonData
+      // }
       this.$refs.cardComponent.scrollIntoView({ behavior: 'smooth' });
     },
     nextData() {
@@ -986,21 +445,22 @@ export default {
       } else {
         this.selectedIndex = this.selectedIndex + 1
         this.selectedData = this.dataList[this.selectedIndex]
-        const jsonData = this.selectedData.jsonData
-        if (jsonData) {
-          this.dataDetail = jsonData
-        }
-      }
-    },
-    formatDate(dateString) {
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      };
 
-      const date = new Date(dateString);
-      return date.toLocaleString('en-US', options);
+        axiosInstance.get('/type/' + this.dataList[this.selectedIndex].typeId)
+            .then((response) => {
+              this.dataFormList = response.data.data.attributes
+              if (this.dataList[this.selectedIndex].jsonData) {
+                this.dataDetail = this.dataList[this.selectedIndex].jsonData
+              } else {
+                this.dataDetail = response.data.data.jsonFormat
+              }
+            })
+
+        // const jsonData = this.selectedData.jsonData
+        // if (jsonData) {
+        //   this.dataDetail = jsonData
+        // }
+      }
     },
     handleSelect() {
       const text = window.getSelection().toString()
@@ -1120,33 +580,7 @@ export default {
           })
     },
     clearData() {
-      this.dataDetail = {
-        mescNumber: '',
-        mescShortDesc: '',
-        partName: '',
-        mpn: '',
-        mfr: '',
-        dimensiRatingPart: '',
-        materialPart: '',
-        partFor: '',
-        eqModel: '',
-        assemblyLoc: '',
-        eqSizeDimension: '',
-        eqMaterial: '',
-        eqSerialNum: '',
-        eqPositionNum: '',
-        eqDwgNum: '',
-        mfrOcmPartNum: '',
-        mfrOcm: '',
-        eqPtmnDwgNum: '',
-        eqProjNum: '',
-        eqOrderNumber: '',
-        eqTagNum: '',
-        eqDocNum: '',
-        buildYear: '',
-        shippingParticularCode: '',
-        other: ''
-      }
+      this.dataDetail = {}
     },
     exportToExcel(isHorizontal) {
       const pageSize = isHorizontal ? 999999 : 6000; // Number of rows per page/chunk
@@ -1254,208 +688,6 @@ export default {
       Swal.close()
     }
   },
-  computed: {
-    mescNumber: {
-      get() {
-        return this.dataDetail.mescNumber.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mescNumber = value.toUpperCase();
-      }
-    },
-    mescShortDesc: {
-      get() {
-        return this.dataDetail.mescShortDesc.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mescShortDesc = value.toUpperCase();
-      }
-    },
-    partName: {
-      get() {
-        return this.dataDetail.partName.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.partName = value.toUpperCase();
-      }
-    },
-    mpn: {
-      get() {
-        return this.dataDetail.mpn.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mpn = value.toUpperCase();
-      }
-    },
-    mfr: {
-      get() {
-        return this.dataDetail.mfr.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mfr = value.toUpperCase();
-      }
-    },
-    dimensiRatingPart: {
-      get() {
-        return this.dataDetail.dimensiRatingPart.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.dimensiRatingPart = value.toUpperCase();
-      }
-    },
-    materialPart: {
-      get() {
-        return this.dataDetail.materialPart.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.materialPart = value.toUpperCase();
-      }
-    },
-    partFor: {
-      get() {
-        return this.dataDetail.partFor.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.partFor = value.toUpperCase();
-      }
-    },
-    eqModel: {
-      get() {
-        return this.dataDetail.eqModel.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqModel = value.toUpperCase();
-      }
-    },
-    assemblyLoc: {
-      get() {
-        return this.dataDetail.assemblyLoc.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.assemblyLoc = value.toUpperCase();
-      }
-    },
-    eqSizeDimension: {
-      get() {
-        return this.dataDetail.eqSizeDimension.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqSizeDimension = value.toUpperCase();
-      }
-    },
-    eqMaterial: {
-      get() {
-        return this.dataDetail.eqMaterial.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqMaterial = value.toUpperCase();
-      }
-    },
-    eqSerialNum: {
-      get() {
-        return this.dataDetail.eqSerialNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqSerialNum = value.toUpperCase();
-      }
-    },
-    eqPositionNum: {
-      get() {
-        return this.dataDetail.eqPositionNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqPositionNum = value.toUpperCase();
-      }
-    },
-    eqDwgNum: {
-      get() {
-        return this.dataDetail.eqDwgNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqDwgNum = value.toUpperCase();
-      }
-    },
-    mfrOcmPartNum: {
-      get() {
-        return this.dataDetail.mfrOcmPartNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mfrOcmPartNum = value.toUpperCase();
-      }
-    },
-    mfrOcm: {
-      get() {
-        return this.dataDetail.mfrOcm.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.mfrOcm = value.toUpperCase();
-      }
-    },
-    eqPtmnDwgNum: {
-      get() {
-        return this.dataDetail.eqPtmnDwgNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqPtmnDwgNum = value.toUpperCase();
-      }
-    },
-    eqProjNum: {
-      get() {
-        return this.dataDetail.eqProjNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqProjNum = value.toUpperCase();
-      }
-    },
-    eqOrderNumber: {
-      get() {
-        return this.dataDetail.eqOrderNumber.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqOrderNumber = value.toUpperCase();
-      }
-    },
-    eqTagNum: {
-      get() {
-        return this.dataDetail.eqTagNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqTagNum = value.toUpperCase();
-      }
-    },
-    eqDocNum: {
-      get() {
-        return this.dataDetail.eqDocNum.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.eqDocNum = value.toUpperCase();
-      }
-    },
-    buildYear: {
-      get() {
-        return this.dataDetail.buildYear.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.buildYear = value.toUpperCase();
-      }
-    },
-    shippingParticularCode: {
-      get() {
-        return this.dataDetail.shippingParticularCode.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.shippingParticularCode = value.toUpperCase();
-      }
-    },
-    other: {
-      get() {
-        return this.dataDetail.other.toUpperCase();
-      },
-      set(value) {
-        this.dataDetail.other = value.toUpperCase();
-      }
-    },
-  }
 }
 </script>
 

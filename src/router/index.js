@@ -30,6 +30,11 @@ const routes = [
         component: () => import('@/views/workspace/DataList.vue'),
       },
       {
+        path: '/type',
+        name: 'Type List',
+        component: () => import('@/views/type/TypeList.vue'),
+      },
+      {
         path: '/theme',
         name: 'Theme',
         redirect: '/theme/typography',

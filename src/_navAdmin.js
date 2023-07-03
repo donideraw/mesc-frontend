@@ -25,6 +25,12 @@ export default [
   },
   {
     component: 'CNavItem',
+    name: 'Type List',
+    to: '/type',
+    icon: 'cil-speedometer',
+  },
+  {
+    component: 'CNavItem',
     name: 'Task List',
     to: '/data',
     icon: 'cil-pencil',
