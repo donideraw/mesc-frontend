@@ -208,13 +208,29 @@
                     <CListGroupItem><strong>Noun Modifier: </strong>SPAREPARTS</CListGroupItem>
                     <CListGroupItem>
                       <CRow>
-                        <CCol md="12">
-                          <CFormInput
-                              v-model="linkReference"
-                              type="text"
-                              label="Link Reference"
-                          />
-                        </CCol>
+                        <strong>Link Reference: </strong>
+                      </CRow>
+                      <br />
+                      <CRow>
+                        <div>
+                          <CRow v-for="(value, index) in linkReference" :key="index" class="input-group">
+                            <CRow>
+                              <CCol md="11">
+                                <CFormInput
+                                    v-model="linkReference[index]"
+                                    type="text"
+                                />
+                              </CCol>
+                              <CCol md="1">
+                                <CButton @click="removeValue(index)" color="danger">-</CButton>
+                              </CCol>
+                              <br /><br />
+                            </CRow>
+                          </CRow>
+                          <div class="mt-3">
+                            <CButton @click="addValue" color="primary">+</CButton>
+                          </div>
+                        </div>
                       </CRow>
                     </CListGroupItem>
                   </CListGroup>
@@ -824,7 +840,7 @@ export default {
       selectedData: {},
       selectedText: '',
       manufacturer: '',
-      linkReference: '',
+      linkReference: [''],
       showModal: false,
       showModalView: false,
       showModalDownload: false,
@@ -891,6 +907,12 @@ export default {
     }
   },
   methods: {
+    addValue() {
+      this.linkReference.push('');
+    },
+    removeValue(index) {
+      this.linkReference.splice(index, 1);
+    },
     changePage(page) {
       this.currentPage = page
       this.getData()
@@ -969,7 +991,7 @@ export default {
       this.selectedData = this.dataList[index]
       const jsonData = this.selectedData.jsonData
       this.manufacturer = this.selectedData.issuer
-      this.linkReference = this.selectedData.reference
+      this.linkReference = this.selectedData.reference ? this.selectedData.reference.split(';') : ['']
       if (jsonData) {
         this.dataDetail = jsonData
       }
@@ -1024,7 +1046,7 @@ export default {
         dataId: this.selectedData.dataId,
         issuer: this.selectedData.issuer,
         jsonData: this.dataDetail,
-        linkReference: this.linkReference
+        linkReference: this.concatenatedValues
       }
 
       axiosInstance
@@ -1050,7 +1072,7 @@ export default {
         dataId: this.selectedData.dataId,
         issuer: this.manufacturer,
         jsonData: this.dataDetail,
-        linkReference: this.linkReference
+        linkReference: this.concatenatedValues
       }
 
       axiosInstance
@@ -1255,6 +1277,9 @@ export default {
     }
   },
   computed: {
+    concatenatedValues() {
+      return this.linkReference.join(';');
+    },
     mescNumber: {
       get() {
         return this.dataDetail.mescNumber.toUpperCase();
