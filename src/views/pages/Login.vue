@@ -32,11 +32,6 @@
                         Login
                       </CButton>
                     </CCol>
-                    <CCol :xs="4" class="text-right">
-                      <CButton class="px-0" color="link">
-                        Forgot password?
-                      </CButton>
-                    </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
