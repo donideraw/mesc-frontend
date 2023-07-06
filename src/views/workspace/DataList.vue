@@ -40,7 +40,17 @@
             />
             </CInputGroup>
           </CCol>
-          <CCol md="7">
+          <CCol md="2">
+            <div v-if="!isVerificator()">
+              <CFormSelect aria-label="Default select example" :value="selectedStatus" @input="selectedStatus = $event.target.value; getData()">
+                <option value="null">ALL</option>
+                <option value="ASSIGNED">ASSIGNED</option>
+                <option value="REQUESTED">REQUESTED</option>
+                <option value="SUBMITTED">SUBMITED</option>
+              </CFormSelect>
+            </div>
+          </CCol>
+          <CCol md="5">
             <div v-if="isAdmin()">
               <CButton color="primary" class="float-end" @click="() => { showModalDownload = true }">
                 <CIcon icon="cil-cloud-download" />
@@ -832,11 +842,12 @@ export default {
   data() {
     return {
       currentPage: 0,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       totalPage: 0,
       autoCopyEnabled: true,
       paginationCurrentNumber: [1,2,3],
       selectedIndex: null,
+      selectedStatus: "null",
       selectedData: {},
       selectedText: '',
       manufacturer: '',
@@ -963,7 +974,8 @@ export default {
       const data = {
         page: this.currentPage,
         size: this.itemsPerPage,
-        search: this.keyword
+        search: this.keyword,
+        status: this.selectedStatus === 'null' ? null : this.selectedStatus
       }
 
       axiosInstance.post('/base', data)
@@ -974,6 +986,8 @@ export default {
               this.paginationCurrentNumber = [1]
             } else if (this.totalPage == 2) {
               this.paginationCurrentNumber = [1,2]
+            } else {
+              this.paginationCurrentNumber = [1,2,3]
             }
           })
     },
@@ -1040,6 +1054,9 @@ export default {
     },
     isStaff() {
       return localStorage.getItem('role') === 'STAFF'
+    },
+    isVerificator() {
+      return localStorage.getItem('role') === 'VERIFICATOR'
     },
     saveAsDraft() {
       const data = {
