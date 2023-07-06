@@ -32,6 +32,7 @@
         <CTableHead color="light">
           <CTableRow>
             <CTableHeaderCell class="text-center">Noun-Modifier</CTableHeaderCell>
+            <CTableHeaderCell class="text-center">Type</CTableHeaderCell>
             <CTableHeaderCell class="text-center">Noun</CTableHeaderCell>
             <CTableHeaderCell class="text-center">Modifier</CTableHeaderCell>
             <CTableHeaderCell class="text-center"
@@ -44,6 +45,9 @@
           <CTableRow v-for="(item, index) in dataList" :key="item.typeId">
             <CTableDataCell class="text-center">
               <div>{{ item.typeId }}</div>
+            </CTableDataCell>
+            <CTableDataCell class="text-center">
+              <div>{{ item.type }}</div>
             </CTableDataCell>
             <CTableDataCell class="text-center">
               <div>{{ item.typeName }}</div>
@@ -98,7 +102,7 @@ export default {
   data() {
     return {
       currentPage: 0,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       totalPage: 0,
       paginationCurrentNumber: [1,2,3],
       dataList: [],
