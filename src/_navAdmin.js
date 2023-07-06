@@ -29,4 +29,10 @@ export default [
     to: '/data',
     icon: 'cil-pencil',
   },
+  {
+    component: 'CNavItem',
+    name: 'Logs',
+    to: '/logs',
+    icon: 'cil-puzzle',
+  },
 ]

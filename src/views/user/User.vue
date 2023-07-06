@@ -221,10 +221,6 @@ export default {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false
       };
 
       const date = new Date(dateString);
