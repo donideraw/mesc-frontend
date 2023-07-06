@@ -986,7 +986,7 @@ export default {
               this.paginationCurrentNumber = [1]
             } else if (this.totalPage == 2) {
               this.paginationCurrentNumber = [1,2]
-            } else {
+            } else if (this.totalPage > 2 && this.paginationCurrentNumber.length < 3){
               this.paginationCurrentNumber = [1,2,3]
             }
           })
