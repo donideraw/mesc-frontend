@@ -57,7 +57,7 @@
                 <br/>
                 <CRow>
                   <CCol md="10"></CCol>
-                  <CCol md="2">
+                  <CCol md="2" class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <CButton class="d-flex" color="primary" @click="addData">
                       Add
                     </CButton>

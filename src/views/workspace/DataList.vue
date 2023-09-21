@@ -17,7 +17,7 @@
                   <br/>
                   <CRow>
                     <CCol md="9"></CCol>
-                    <CCol md="3">
+                    <CCol md="3" class="d-grid gap-2 d-md-flex justify-content-md-end">
                       <CButton class="d-flex" color="primary" @click="uploadFile" alignment="right">
                         Upload
                       </CButton>
@@ -36,7 +36,7 @@
             <CFormInput
                 v-model="keyword"
                 type="text"
-                @keyup.enter="getData"
+                @keyup.enter="getData(false)"
             />
             </CInputGroup>
           </CCol>
@@ -48,7 +48,7 @@
             </div>
           </CCol>
           <CCol md="2">
-            <CFormSelect aria-label="Default select example" :value="itemsPerPage" @input="itemsPerPage = $event.target.value; getData()">
+            <CFormSelect aria-label="Default select example" :value="itemsPerPage" @input="itemsPerPage = $event.target.value; getData(false)">
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="25">25</option>
@@ -59,11 +59,10 @@
           <CTableHead color="light">
             <CTableRow>
               <CTableHeaderCell class="text-center">No</CTableHeaderCell>
-              <CTableHeaderCell class="text-center">Material</CTableHeaderCell>
-              <CTableHeaderCell class="text-center">Manufacturer</CTableHeaderCell>
+              <CTableHeaderCell class="text-center">EquipmentId</CTableHeaderCell>
+              <CTableHeaderCell class="text-center">Category</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Description</CTableHeaderCell>
-              <CTableHeaderCell class="text-center">Assignee</CTableHeaderCell>
-              <CTableHeaderCell class="text-center">Noun Modifier</CTableHeaderCell>
+              <CTableHeaderCell class="text-center">Catalog Profile</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Status</CTableHeaderCell>
               <CTableHeaderCell class="text-center">Action</CTableHeaderCell>
             </CTableRow>
@@ -74,24 +73,19 @@
                 <div>{{ (currentPage*itemsPerPage) + index + 1 }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div>{{ item.dataId }}</div>
+                <div>{{ item.equipmentId }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div v-if="item.issuer">{{ item.issuer }}</div>
-                <div v-else>Not defined</div>
+                <div>{{ item.category }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
                 <div>{{ item.description }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div v-if="item.assignee">{{ item.assignee }}</div>
-                <div v-else>Not assigned</div>
-              </CTableDataCell>
-              <CTableDataCell class="text-center">
                 <div>{{ item.typeId }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div v-if="item.status == 'UPLOADED'">
+                <div v-if="item.status == 'DRAFT'">
                   <CBadge color="primary" shape="rounded-pill"> {{ item.status }}</CBadge>
                 </div>
                 <div v-else-if="item.status == 'ASSIGNED'">
@@ -133,133 +127,237 @@
     <div ref="cardComponent">
       <div v-if="isStaff()">
         <CCard class="mb-4">
-          <CCardHeader>Material Master</CCardHeader>
+          <CCardHeader><strong>Equipment Master</strong></CCardHeader>
           <CCardBody>
             <CRow>
-              <CCol md="5">
-                <CRow>
-                  <CCol>
-                    <CButton  color="primary" disabled>
-                      Auto Parse
-                    </CButton>
-                  </CCol>
-                </CRow>
-                <br />
+              <CCol md="6">
                 <CCard>
                   <CCardHeader>
                     <CRow>
                       <CCol md="9">
-                        <strong>Material - {{selectedData.dataId}}</strong>
-                      </CCol>
-                      <CCol md="3">
-                        <div v-if="selectedData.status == 'UPLOADED'">
-                          <CBadge color="primary" shape="rounded-pill"> {{ selectedData.status }}</CBadge>
-                        </div>
-                        <div v-else-if="selectedData.status == 'ASSIGNED'">
-                          <CBadge color="secondary" shape="rounded-pill"> {{ selectedData.status }}</CBadge>
-                        </div>
-                        <div v-else-if="selectedData.status == 'SUBMITTED'">
-                          <CBadge color="warning" shape="rounded-pill"> {{ selectedData.status }}</CBadge>
-                        </div>
-                        <div v-else>
-                          <CBadge color="success" shape="rounded-pill"> {{ selectedData.status }}</CBadge>
-                        </div>
+                        <strong>General Data</strong>
                       </CCol>
                     </CRow>
                   </CCardHeader>
-                  <CListGroup flush>
-                    <CListGroupItem>
-                      <CRow>
-                        <CCol md="12">
+                  <CCard class="border-white">
+                    <CCardBody>
+                      <CRow class="mb-4">
+                        <CCol>
                           <CFormInput
-                              v-model="manufacturer"
+                              v-model="dataForm.equipmentId"
                               type="text"
-                              label="Manufacturer"
+                              floating-label="Equipment ID:"
                           />
                         </CCol>
                       </CRow>
-                    </CListGroupItem>
-                    <CListGroupItem><strong>Description:</strong><p @mouseup="handleSelect">{{selectedData.description}}</p></CListGroupItem>
-                    <CListGroupItem>
-                      <CRow>
-                        <CCol md="3">
-                          <strong>PO Text:</strong>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.description"
+                              type="text"
+                              floating-label="Description:"
+                          />
                         </CCol>
-                        <CCol md="9">
-                          <CFormSwitch
-                              id="formSwitchCheckDefault"
-                              :label="autoCopyEnabled ? 'auto-copy enabled' : 'auto-copy disabled'"
-                              @input="autoCopyEnabled = !autoCopyEnabled"
-                              v-model="autoCopyEnabled"
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.identificationNo"
+                              type="text"
+                              floating-label="Technical ID:"
                           />
                         </CCol>
                       </CRow>
-                      <CCard color="light">
-                        <CCardBody>
-                          <div class="text-container">
-                            <p @mouseup="handleSelect">{{selectedData.detail}}</p>
-                          </div>
-                        </CCardBody>
-                      </CCard>
-                      <br />
-                    </CListGroupItem>
-                    <CListGroupItem><strong>Noun Modifier: </strong>{{ activeFormType.typeId }}</CListGroupItem>
-                    <CListGroupItem>
-                      <CRow>
-                        <strong>Link Reference: </strong>
+                      <CRow class="mb-4">
+                        <CCol md="12">
+                          <CFormSelect v-model="catalogProfile" :on-change="onChangeCatalogProfile()">
+                            <option value="">Catalog Profile</option>
+                            <option
+                                v-for="option in dataCatalogProfile"
+                                :value="option.typeId"
+                                :key="option"
+                            >
+                              {{ option.typeId }} - {{ option.description }}
+                            </option>
+                          </CFormSelect>
+                        </CCol>
                       </CRow>
-                      <br />
-                      <CRow>
-                        <div>
-                          <CRow v-for="(value, index) in linkReference" :key="index" class="input-group">
-                            <CRow>
-                              <CCol md="11">
-                                <CFormInput
-                                    v-model="linkReference[index]"
-                                    type="text"
-                                />
-                              </CCol>
-                              <CCol md="1">
-                                <CButton @click="removeValue(index)" color="danger">-</CButton>
-                              </CCol>
-                              <br /><br />
-                            </CRow>
-                          </CRow>
-                          <div class="mt-3">
-                            <CButton @click="addValue" color="primary">+</CButton>
-                          </div>
-                        </div>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.weight"
+                              type="text"
+                              floating-label="Weight:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.uom"
+                              type="text"
+                              floating-label="Unit of Measure:"
+                          />
+                        </CCol>
                       </CRow>
-                    </CListGroupItem>
-                  </CListGroup>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.size"
+                              type="text"
+                              floating-label="Size/dimension:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="constYearMonth"
+                              type="text"
+                              floating-label="Conts Year/Month:"
+                          />
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
+                </CCard>
+                <br/>
+                <CCard>
+                  <CCardHeader>
+                    <CRow>
+                      <CCol md="9">
+                        <strong>Additional Data</strong>
+                      </CCol>
+                    </CRow>
+                  </CCardHeader>
+                  <CCard class="border-white">
+                    <CCardBody>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.category"
+                              type="text"
+                              floating-label="Category:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.location"
+                              type="text"
+                              floating-label="Location:"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.drawingNo"
+                              type="text"
+                              floating-label="Drawing No:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.partNo"
+                              type="text"
+                              floating-label="Manufacture Part No:"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.functionalLocation"
+                              type="text"
+                              floating-label="Functional location:"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
+                        <CCol md="12">
+                          <CFormInput id="inputGroupFile02" type="file" @change="handleFileChangeReference" label="File Reference"/>
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
+                        <CCol md="10"></CCol>
+                        <CCol md="2" class="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <CButton class="d-flex" color="primary" @click="uploadFileReference" alignment="right">
+                            Upload
+                          </CButton>
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
                 </CCard>
               </CCol>
-              <CCol md="7">
-                <CRow>
-                  <CCol md="9"></CCol>
-                  <CCol md="3">
+              <CCol md="6">
+                <CCard>
+                  <CCardHeader>
                     <CRow>
-                      <CButton  color="primary" @click="nextData">
-                        Next Data  >>
-                      </CButton>
+                      <CCol md="9">
+                        <strong>Organization</strong>
+                      </CCol>
                     </CRow>
-                  </CCol>
-                </CRow>
-                <br />
-                <CRow>
-                  <CCol md="6" v-for="(item, index) in dataFormList">
-                    <CFormInput
-                        v-model="dataDetail[item.key]"
-                        :label="(index+1) + '-' + item.tagName"
-                        placeholder="Input data..."
-                        type="text"
-                    />
-                    <br />
-                  </CCol>
-                </CRow>
+                  </CCardHeader>
+                  <CCard class="border-white">
+                    <CCardBody>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.manufacturer"
+                              type="text"
+                              floating-label="Manufacturer:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.originCountry"
+                              type="text"
+                              floating-label="Manufacturer country:"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.model"
+                              type="text"
+                              floating-label="Model number:"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.serialNo"
+                              type="text"
+                              floating-label="Manufacturer Serial No:"
+                          />
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
+                </CCard>
+                <br/>
+                <CCard>
+                  <CCardHeader>
+                    <CRow>
+                      <CCol md="9">
+                        <strong>Classification</strong>
+                      </CCol>
+                    </CRow>
+                  </CCardHeader>
+                  <CCard class="border-white">
+                    <CCardBody>
+                      <CRow>
+                        <CCol md="6" v-for="item in dataFormList">
+                          <CFormInput
+                              v-model="dataDetail[item.key]"
+                              :floating-label="item.tagName"
+                              type="text"
+                          />
+                          <br />
+                        </CCol>
+                      </CRow>
+                    </CCardBody>
+                  </CCard>
+                </CCard>
+                <br/>
                 <CRow>
                   <CCol md="3">
-                    <CButton  color="secondary" @click="saveAsDraft" :disabled="selectedData.status != 'ASSIGNED'">
+                    <CButton  color="secondary" @click="saveAsDraft">
                       Save as Draft
                     </CButton>
                   </CCol>
@@ -299,16 +397,17 @@
             </CCol>
           </CRow>
           <CRow>
-            <CCol md="3"></CCol>
-            <CCol md="3">
-              <CButton @click="exportToExcel(true)" color="primary" variant="outline">Horizontal
+            <CCol md="2"></CCol>
+            <CCol md="8">
+              <CButton @click="exportToExcel(true)" color="primary" variant="outline">Equipment Master
+              </CButton>
+              &nbsp;
+<!--            </CCol>-->
+<!--            <CCol md="3">-->
+              <CButton @click="exportToExcel(false)" color="primary" variant="outline">Classification
               </CButton>
             </CCol>
-            <CCol md="3">
-              <CButton @click="exportToExcel(false)" color="primary" variant="outline">Vertical
-              </CButton>
-            </CCol>
-            <CCol md="3"></CCol>
+            <CCol md="2"></CCol>
           </CRow>
         </CModalBody>
       </CModal>
@@ -335,6 +434,37 @@ export default {
       selectedIndex: null,
       selectedData: {},
       selectedText: '',
+      catProfSelected: {},
+
+      catalogProfile:'',
+      constYearMonth: '',
+      dataForm: {
+        equipmentId: '',
+        description: '',
+        typeId: '',
+        category: '',
+        weight: '',
+        size: '',
+        identificationNo: '',
+        constructionYear: '',
+        constructionMonth: '',
+        filePath: '',
+
+        uom: '',
+        location: '',
+        drawingNo: '',
+        partNo: '',
+        functionalLocation: '',
+
+        manufacturer: '',
+        originCountry: '',
+        model: '',
+        serialNo: '',
+
+        classification: {}
+
+      },
+
       manufacturer: '',
       linkReference: [''],
       showModal: false,
@@ -342,25 +472,21 @@ export default {
       showModalDownload: false,
       dataList: [],
       file: null,
+      fileReference: null,
       issuer: '',
       switchValue: false,
       comment: '',
       keyword: '',
       dataDetail: {},
       dataFormList: [],
+      dataCatalogProfile: [],
       activeFormType: {}
     }
   },
   methods: {
-    addValue() {
-      this.linkReference.push('');
-    },
-    removeValue(index) {
-      this.linkReference.splice(index, 1);
-    },
     changePage(page) {
       this.currentPage = page
-      this.getData()
+      this.getData(true)
     },
     onNextPagination() {
       if (this.paginationCurrentNumber.length > 2 && this.paginationCurrentNumber[2] != this.totalPage) {
@@ -377,6 +503,9 @@ export default {
     handleFileChange(event) {
       this.file = event.target.files[0]
     },
+    handleFileChangeReference(event) {
+      this.fileReference = event.target.files[0]
+    },
     uploadFile() {
       LoadIndicator('Uploading file...')
       const formData = new FormData();
@@ -388,7 +517,7 @@ export default {
         }
       })
           .then(response => {
-            this.getData()
+            this.getData(false)
             this.file = null
             Swal.fire({
               icon: 'success',
@@ -404,7 +533,57 @@ export default {
             })
           });
     },
-    getData() {
+    uploadFileReference() {
+      LoadIndicator('Uploading file...')
+      const formData = new FormData();
+      formData.append('fileReference', this.fileReference);
+
+      axiosInstance.post('/upload/reference', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+          .then(response => {
+            this.dataForm.filePath=response.data.data.filePath
+            this.file = null
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'File uploaded success',
+            })
+          })
+          .catch(error => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Something bad happen',
+            })
+          });
+    },
+    getDataCatalogProfile() {
+      const data = {
+        page: 0,
+        size: 330,
+        search: ''
+      }
+
+      axiosInstance.post('/type', data)
+          .then((response) => {
+            this.dataCatalogProfile = response.data.data.data
+          })
+    },
+    onChangeCatalogProfile() {
+      if (this.dataCatalogProfile.filter(catProf => catProf.typeId == this.catalogProfile)[0]) {
+        const catprof = this.dataCatalogProfile.filter(catProf => catProf.typeId == this.catalogProfile)[0]
+        this.dataFormList = catprof.attributes
+        this.catProfSelected = catprof
+      }
+    },
+    getData(isFromPage) {
+      if (!isFromPage) {
+        this.currentPage = 0
+        this.paginationCurrentNumber = [1,2,3]
+      }
       const data = {
         page: this.currentPage,
         size: this.itemsPerPage,
@@ -435,65 +614,18 @@ export default {
       this.selectedIndex = index
       this.selectedData = this.dataList[index]
 
-      axiosInstance.get('/type/' + this.dataList[index].typeId)
-          .then((response) => {
-            this.activeFormType = response.data.data
-            this.dataFormList = response.data.data.attributes
-            if (this.dataList[index].jsonData) {
-              this.dataDetail = this.dataList[index].jsonData
-            } else {
-              this.dataDetail = response.data.data.jsonFormat
-            }
-          })
+      this.dataForm = this.dataList[index]
+      this.catalogProfile = this.dataForm.typeId
+      this.constYearMonth = this.dataForm.constructionYear + '/' + this.dataForm.constructionMonth
 
-      // this.selectedIndex = index
-      // this.selectedData = this.dataList[index]
-      // const jsonData = this.selectedData.jsonData
-      // this.manufacturer = this.selectedData.issuer
-      // this.linkReference = this.selectedData.reference
-      // if (jsonData) {
-      //   this.dataDetail = jsonData
-      // }
+      Object.assign(this.dataDetail, this.dataForm.classification);
+      if (this.dataCatalogProfile.filter(catProf => catProf.typeId == this.catalogProfile)[0]) {
+        const catprof = this.dataCatalogProfile.filter(catProf => catProf.typeId == this.catalogProfile)[0]
+        this.dataFormList = catprof.attributes
+        this.catProfSelected = catprof
+      }
+
       this.$refs.cardComponent.scrollIntoView({ behavior: 'smooth' });
-    },
-    nextData() {
-      this.clearData()
-      if (this.selectedIndex + 1 >= this.dataList.length) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No more data!',
-        })
-      } else {
-        this.selectedIndex = this.selectedIndex + 1
-        this.selectedData = this.dataList[this.selectedIndex]
-
-        axiosInstance.get('/type/' + this.dataList[this.selectedIndex].typeId)
-            .then((response) => {
-              this.dataFormList = response.data.data.attributes
-              if (this.dataList[this.selectedIndex].jsonData) {
-                this.dataDetail = this.dataList[this.selectedIndex].jsonData
-              } else {
-                this.dataDetail = response.data.data.jsonFormat
-              }
-            })
-
-        // const jsonData = this.selectedData.jsonData
-        // if (jsonData) {
-        //   this.dataDetail = jsonData
-        // }
-      }
-    },
-    handleSelect() {
-      const text = window.getSelection().toString()
-      if (this.autoCopyEnabled && text != '') {
-        this.selectedText = text
-        this.showModal = true
-      }
-    },
-    putToForm(key) {
-      this.dataDetail[key] = this.selectedText
-      this.showModal = false
     },
     isAdmin() {
       return localStorage.getItem('role') === 'ADMIN'
@@ -502,15 +634,14 @@ export default {
       return localStorage.getItem('role') === 'STAFF'
     },
     saveAsDraft() {
-      const data = {
-        dataId: this.selectedData.dataId,
-        issuer: this.selectedData.issuer,
-        jsonData: this.dataDetail,
-        linkReference: this.concatenatedValues
-      }
+
+      this.dataForm.classification = this.dataDetail
+      this.dataForm.typeId = this.catalogProfile
+      this.dataForm.constructionYear = this.constYearMonth.substring(0,4)
+      this.dataForm.constructionMonth = this.constYearMonth.substring(5)
 
       axiosInstance
-          .post('/base/draft', data)
+          .post('/base/draft', this.dataForm)
           .then(() => {
             Swal.fire({
               icon: 'success',
@@ -518,6 +649,7 @@ export default {
               text: 'Data saved as draft!',
             })
             this.getData()
+            this.clearForm()
           })
           .catch(() => {
             Swal.fire({
@@ -528,28 +660,27 @@ export default {
           })
     },
     submitData() {
-      const data = {
-        dataId: this.selectedData.dataId,
-        issuer: this.manufacturer,
-        jsonData: this.dataDetail,
-        linkReference: this.concatenatedValues
-      }
+      this.dataForm.classification = this.dataDetail
+      this.dataForm.typeId = this.catalogProfile
+      this.dataForm.constructionYear = this.constYearMonth.substring(0,4)
+      this.dataForm.constructionMonth = this.constYearMonth.substring(5)
 
       axiosInstance
-          .post('/base/submit', data)
+          .post('/base/submit', this.dataForm)
           .then(() => {
             Swal.fire({
               icon: 'success',
               title: 'Success',
-              text: 'Data submitted successfully!',
+              text: 'Data saved as draft!',
             })
             this.getData()
+            this.clearForm()
           })
           .catch(() => {
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'Failed to submit data',
+              text: 'Failed to save data',
             })
           })
     },
@@ -603,6 +734,36 @@ export default {
     },
     clearData() {
       this.dataDetail = {}
+    },
+    clearForm() {
+      this.dataDetail = {}
+      this.catalogProfile = ''
+      this.constYearMonth = ''
+      this.dataForm = {
+        equipmentId: '',
+        description: '',
+        typeId: '',
+        category: '',
+        weight: '',
+        size: '',
+        identificationNo: '',
+        constructionYear: '',
+        constructionMonth: '',
+
+        uom: '',
+        location: '',
+        drawingNo: '',
+        partNo: '',
+        functionalLocation: '',
+
+        manufacturer: '',
+        originCountry: '',
+        model: '',
+        serialNo: '',
+
+        classification: {}
+
+      }
     },
     exportToExcel(isHorizontal) {
       const pageSize = isHorizontal ? 999999 : 6000; // Number of rows per page/chunk
@@ -658,42 +819,51 @@ export default {
       document.body.removeChild(link);
     },
     modifyJSONDataTypeA(json) {
-      const excludeFields = ['detail', 'status', 'assignee', 'comment', 'uploadedBy', 'uploadedAt', 'submittedBy', 'submittedAt', 'checkedBy', 'checkedAt']
+      const excludeFields = ['classification', 'status', 'comment', 'submittedBy', 'submittedAt']
 
       return json.map(item => {
         const modifiedItem = {
-          Material: item.dataId,
-          Manufacturer: item.issuer,
+          "Equipment Tag No": item.equipmentId,
+          "Equipment Category": item.category,
           Description: item.description,
-          // PoText: item.detail,
-          Reference : item.reference,
+          Weight: item.weight,
+          "UOM": item.uom,
+          "Size/Dimension": item.size,
+          "Location": item.location,
+          "Functional Location": item.functionalLocation,
+          "Technical Identification No": item.identificationNo,
+          Manufacturer: item.manufacturer,
+          "Model/Type": item.model,
+          "Manufacturer Part No": item.partNo,
+          "Manufacturer Serial No": item.serialNo,
+          "Manufacturer Origin Country": item.originCountry,
+          "Construction Year": item.constructionYear,
+          "Construction Month": item.constructionMonth,
           ...item.jsonData
         };
         excludeFields.forEach(field => delete modifiedItem[field]);
-        Object.entries(this.tagName).forEach(([key, value]) => {
-          if (modifiedItem[key]) {
-            modifiedItem[value] = modifiedItem[key];
-            delete modifiedItem[key];
-          }
-        });
         return modifiedItem;
       });
 
     },
     modifyJSONDataTypeB(json) {
-      return json.map(item => {
-        const transformedItems = Object.keys(item.jsonData).map(key => ({
-          Material: item.dataId,
-          Manufacturer: item.issuer,
-          Description: item.description,
-          PoText: item.detail,
-          Reference : item.reference,
-          Attribute: this.tagName[key],
-          Value: item.jsonData[key]
-        }));
+      let formattedJson = []
 
-        return transformedItems;
-      }).flat();
+      json.forEach(item => {
+        const typeId = item.typeId;
+        const classification = item.classification;
+
+        for (const key in classification) {
+          const formattedKey = key.replace(/([A-Z])/g, '-$1').toUpperCase();
+          formattedJson.push({
+            equipment: item.equipmentId,
+            "Catalog Profile": typeId,
+            char: formattedKey,
+            value: classification[key]
+          });
+        }
+      });
+      return formattedJson;
     }
   },
   beforeMount() {
@@ -706,15 +876,11 @@ export default {
       router.push('/pages/login')
     } else {
       LoadIndicator('Loading data...')
-      this.getData()
+      this.getDataCatalogProfile()
+      this.getData(false)
       Swal.close()
     }
   },
-  computed: {
-    concatenatedValues() {
-      return this.linkReference.join(';');
-    },
-  }
 }
 </script>
 

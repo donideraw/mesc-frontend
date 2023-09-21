@@ -21,18 +21,34 @@ export default [
   },
   {
     component: 'CNavTitle',
-    name: 'Workspace',
+    name: 'Master Data',
   },
   {
     component: 'CNavItem',
-    name: 'Type List',
+    name: 'Catalog Profile',
     to: '/type',
     icon: 'cil-speedometer',
   },
   {
     component: 'CNavItem',
-    name: 'Task List',
+    name: 'Material Master',
+    to: '/materials',
+    icon: 'cil-puzzle',
+  },
+  {
+    component: 'CNavTitle',
+    name: 'Workspace',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Equipment Master',
     to: '/data',
     icon: 'cil-pencil',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Bill of Material',
+    to: '/bill',
+    icon: 'cil-calculator',
   },
 ]

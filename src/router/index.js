@@ -30,6 +30,16 @@ const routes = [
         component: () => import('@/views/workspace/DataList.vue'),
       },
       {
+        path: '/bill',
+        name: 'Bill of Material',
+        component: () => import('@/views/bill/BillMaterial.vue'),
+      },
+      {
+        path: '/materials',
+        name: 'Material Master',
+        component: () => import('@/views/material/MaterialMaster.vue'),
+      },
+      {
         path: '/type',
         name: 'Type List',
         component: () => import('@/views/type/TypeList.vue'),

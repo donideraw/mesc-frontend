@@ -31,10 +31,8 @@
       <CTable align="middle" class="mb-0 border" hover responsive>
         <CTableHead color="light">
           <CTableRow>
-            <CTableHeaderCell class="text-center">Noun-Modifier</CTableHeaderCell>
-            <CTableHeaderCell class="text-center">Type</CTableHeaderCell>
-            <CTableHeaderCell class="text-center">Noun</CTableHeaderCell>
-            <CTableHeaderCell class="text-center">Modifier</CTableHeaderCell>
+            <CTableHeaderCell class="text-center">Catalog Profile</CTableHeaderCell>
+            <CTableHeaderCell class="text-center">Description</CTableHeaderCell>
             <CTableHeaderCell class="text-center"
             >Action
             </CTableHeaderCell
@@ -47,13 +45,7 @@
               <div>{{ item.typeId }}</div>
             </CTableDataCell>
             <CTableDataCell class="text-center">
-              <div>{{ item.type }}</div>
-            </CTableDataCell>
-            <CTableDataCell class="text-center">
-              <div>{{ item.typeName }}</div>
-            </CTableDataCell>
-            <CTableDataCell class="text-center">
-              <div>{{ item.subTypeName }}</div>
+              <div>{{ item.description }}</div>
             </CTableDataCell>
             <CTableDataCell class="text-center">
               <CButton color="primary" @click="viewAttribute(index)">
