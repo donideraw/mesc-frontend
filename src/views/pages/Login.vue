@@ -2,12 +2,12 @@
   <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
       <CRow class="justify-content-center">
-        <CCol :md="5">
+        <CCol :md="6">
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
                 <CForm>
-                  <h1>MESC Apps</h1>
+                  <h1>MASTER DATA PM-MM</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>

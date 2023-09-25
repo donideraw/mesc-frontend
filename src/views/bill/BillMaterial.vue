@@ -42,19 +42,26 @@
           <CCol md="2">
             <CButton color="primary" @click="getMaterials">Show</CButton>
           </CCol>
+          <CCol md="7">
+            <div v-if="isAdmin()">
+              <CButton color="primary" @click="exportToExcel">
+                <CIcon icon="cil-cloud-download" />
+              </CButton>
+            </div>
+          </CCol>
         </CRow>
         <CRow class="mb-4">
-          <CTable align="middle" class="mb-0 border" hover responsive>
+          <CTable align="middle" class="mb-0 border text-sm-center"  hover responsive>
             <CTableHead color="light">
               <CTableRow>
-                <CTableHeaderCell class="text-center">Item Number</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Component</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Sort String</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Quantity</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">UOM</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Text 1</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Text 2</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Action</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 100px;" >Item Number</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 100px;">Component</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 100px;">Sort</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 50px;">QTY</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 70px;">UOM</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 200px;">Text Line 1</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 200px;">Text Line 2</CTableHeaderCell>
+                <CTableHeaderCell class="text-center" style="width: 70px;">Action</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -63,42 +70,49 @@
                   <CFormInput
                       v-model="dataList[index].itemNumber"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].component"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].sortString"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].quantity"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].uom"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].textLine1"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="dataList[index].textLine2"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
@@ -110,44 +124,52 @@
               <CTableRow>
                 <CTableDataCell class="text-center">
                   <CFormInput
+                      onresize="true"
                       v-model="data.itemNumber"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.component"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.sortString"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.quantity"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.uom"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.textLine1"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CFormInput
                       v-model="data.textLine2"
                       type="text"
+                      :style="{ fontSize: '10px'}"
                   />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
@@ -275,6 +297,7 @@ import Swal from "sweetalert2"
 import {LoadIndicator} from "@/lib/load-indicator"
 import router from "@/router"
 import dataList from "@/views/workspace/DataList.vue";
+import * as XLSX from "xlsx";
 
 export default {
   name: 'Bill of Material',
@@ -306,10 +329,18 @@ export default {
           })
     },
     getMaterials() {
-      axiosInstance.get('/bill/' + this.equipmentId)
-          .then((response) => {
-            this.dataList = response.data.data
-          })
+      if (this.equipmentId == '') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Choose Equipment',
+        })
+      } else {
+        axiosInstance.get('/bill/' + this.equipmentId)
+            .then((response) => {
+              this.dataList = response.data.data
+            })
+      }
     },
     addNew() {
       this.clearForm()
@@ -394,6 +425,71 @@ export default {
               text: 'Something bad happen',
             })
           });
+    },
+    isAdmin() {
+      return localStorage.getItem('role') === 'ADMIN'
+    },
+    exportToExcel() {
+      if (this.equipmentId == '') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Choose Equipment',
+        })
+      } else {
+        LoadIndicator("Downloading data...");
+
+        axiosInstance.get('/bill/' + this.equipmentId)
+            .then((response) => {
+              const worksheet = XLSX.utils.json_to_sheet(
+                  this.modifyJSONData(response.data.data)
+              );
+              const workbook = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
+              const excelBuffer = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
+
+              this.downloadExcelFile(excelBuffer, `[Bill of Material] - ${this.equipmentId}.xlsx`);
+
+              Swal.close();
+            })
+            .catch((error) => {
+              // Handle error
+              console.log(error)
+              Swal.close();
+            });
+      }
+    },
+    modifyJSONData(json) {
+      const excludeFields = ['id', 'plant']
+
+      return json.map(item => {
+        const modifiedItem = {
+          "Equipment Tag No": item.equipmentId,
+          "Item Number": item.itemNumber,
+          "Item Category": item.itemCategory,
+          Component: item.component,
+          Quantity: item.quantity,
+          UOM: item.uom,
+          "Sort String": item.sortString,
+          "Text Line 1": item.textLine1,
+          "Text Line 2": item.textLine2,
+          "PO Text": item.poText,
+          ...item.jsonData
+        };
+        excludeFields.forEach(field => delete modifiedItem[field]);
+        return modifiedItem;
+      });
+
+    },
+    downloadExcelFile(buffer, fileName) {
+      const data = new Blob([buffer], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   },
   beforeMount() {

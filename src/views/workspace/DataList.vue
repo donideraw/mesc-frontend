@@ -26,6 +26,27 @@
                 </CCardBody>
               </CCard>
             </CCol>
+            <CCol md="6">
+              <CCard>
+                <CCardHeader>Upload Classification</CCardHeader>
+                <CCardBody>
+                  <CRow>
+                    <CCol>
+                      <CFormInput id="inputGroupFile01" type="file" @change="handleFileClassChange"/>
+                    </CCol>
+                  </CRow>
+                  <br/>
+                  <CRow>
+                    <CCol md="9"></CCol>
+                    <CCol md="3" class="d-grid gap-2 d-md-flex justify-content-md-end">
+                      <CButton class="d-flex" color="primary" @click="uploadFileClass" alignment="right">
+                        Upload
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CCardBody>
+              </CCard>
+            </CCol>
           </CRow>
           <br/>
         </div>
@@ -40,7 +61,17 @@
             />
             </CInputGroup>
           </CCol>
-          <CCol md="7">
+          <CCol md="3">
+            <CFormSelect v-model="category" :on-change="onChangeCategory()">
+              <option value="">Choose Category</option>
+              <option value="">All</option>
+              <option value="R">R-ROTATING</option>
+              <option value="N">N-STATIONARY</option>
+              <option value="E">E-ELECTRICAL</option>
+              <option value="I">I-INSTRUMENT</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="4">
             <div v-if="isAdmin()">
               <CButton color="primary" class="float-end" @click="() => { showModalDownload = true }">
                 <CIcon icon="cil-cloud-download" />
@@ -72,13 +103,13 @@
               <CTableDataCell class="text-center">
                 <div>{{ (currentPage*itemsPerPage) + index + 1 }}</div>
               </CTableDataCell>
-              <CTableDataCell class="text-center">
+              <CTableDataCell class="text-sm-center">
                 <div>{{ item.equipmentId }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
                 <div>{{ item.category }}</div>
               </CTableDataCell>
-              <CTableDataCell class="text-center">
+              <CTableDataCell class="text-start">
                 <div>{{ item.description }}</div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
@@ -99,16 +130,9 @@
                 </div>
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                <div v-if="isStaff()">
-                  <CButton color="primary" @click="expandData(index)">
-                    <CIcon icon="cil-pencil" />
-                  </CButton>
-                </div>
-                <div v-else>
-                  <CButton color="primary" @click="viewData(index)">
-                    <CIcon icon="cil-cursor" />
-                  </CButton>
-                </div>
+                <CButton color="primary" @click="expandData(index)">
+                  <CIcon icon="cil-pencil" />
+                </CButton>
               </CTableDataCell>
             </CTableRow>
             <CTableRow></CTableRow>
@@ -125,7 +149,7 @@
       </CCardBody>
     </CCard>
     <div ref="cardComponent">
-      <div v-if="isStaff()">
+      <div>
         <CCard class="mb-4">
           <CCardHeader><strong>Equipment Master</strong></CCardHeader>
           <CCardBody>
@@ -141,21 +165,33 @@
                   </CCardHeader>
                   <CCard class="border-white">
                     <CCardBody>
-                      <CRow class="mb-4">
-                        <CCol>
+                      <CRow class="mb-2">
+                        <CCol md="6">
                           <CFormInput
                               v-model="dataForm.equipmentId"
                               type="text"
                               floating-label="Equipment ID:"
+                              :style="{ fontSize: '12px'}"
+                              readonly
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              :model-value="dataForm.category != '' ? categoryDisplay[dataForm.category] : dataForm.category "
+                              type="text"
+                              floating-label="Category:"
+                              :style="{ fontSize: '12px'}"
+                              readonly
                           />
                         </CCol>
                       </CRow>
-                      <CRow class="mb-4">
+                      <CRow class="mb-2">
                         <CCol md="6">
                           <CFormInput
                               v-model="dataForm.description"
                               type="text"
                               floating-label="Description:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
                         <CCol md="6">
@@ -163,10 +199,11 @@
                               v-model="dataForm.identificationNo"
                               type="text"
                               floating-label="Technical ID:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
                       </CRow>
-                      <CRow class="mb-4">
+                      <CRow class="mb-2">
                         <CCol md="12">
                           <CFormSelect v-model="catalogProfile" :on-change="onChangeCatalogProfile()">
                             <option value="">Catalog Profile</option>
@@ -180,28 +217,39 @@
                           </CFormSelect>
                         </CCol>
                       </CRow>
-                      <CRow class="mb-4">
-                        <CCol md="6">
+                      <CRow class="mb-2">
+                        <CCol md="4">
                           <CFormInput
                               v-model="dataForm.weight"
                               type="text"
                               floating-label="Weight:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
-                        <CCol md="6">
+                        <CCol md="4">
                           <CFormInput
                               v-model="dataForm.uom"
                               type="text"
                               floating-label="Unit of Measure:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
-                      </CRow>
-                      <CRow class="mb-4">
-                        <CCol md="6">
+                        <CCol md="4">
                           <CFormInput
                               v-model="dataForm.size"
                               type="text"
                               floating-label="Size/dimension:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.functionalLocation"
+                              type="text"
+                              floating-label="Functional location:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
                         <CCol md="6">
@@ -209,6 +257,61 @@
                               v-model="constYearMonth"
                               type="text"
                               floating-label="Conts Year/Month:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.location"
+                              type="text"
+                              floating-label="Location:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.partNo"
+                              type="text"
+                              floating-label="Manufacture Part No:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.manufacturer"
+                              type="text"
+                              floating-label="Manufacturer:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.originCountry"
+                              type="text"
+                              floating-label="Manufacturer country:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.model"
+                              type="text"
+                              floating-label="Model number:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <CFormInput
+                              v-model="dataForm.serialNo"
+                              type="text"
+                              floating-label="Manufacturer Serial No:"
+                              :style="{ fontSize: '12px'}"
                           />
                         </CCol>
                       </CRow>
@@ -226,47 +329,6 @@
                   </CCardHeader>
                   <CCard class="border-white">
                     <CCardBody>
-                      <CRow class="mb-4">
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.category"
-                              type="text"
-                              floating-label="Category:"
-                          />
-                        </CCol>
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.location"
-                              type="text"
-                              floating-label="Location:"
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow class="mb-4">
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.drawingNo"
-                              type="text"
-                              floating-label="Drawing No:"
-                          />
-                        </CCol>
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.partNo"
-                              type="text"
-                              floating-label="Manufacture Part No:"
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow class="mb-4">
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.functionalLocation"
-                              type="text"
-                              floating-label="Functional location:"
-                          />
-                        </CCol>
-                      </CRow>
                       <CRow class="mb-4">
                         <CCol md="12">
                           <CFormInput id="inputGroupFile02" type="file" @change="handleFileChangeReference" label="File Reference"/>
@@ -289,64 +351,19 @@
                   <CCardHeader>
                     <CRow>
                       <CCol md="9">
-                        <strong>Organization</strong>
-                      </CCol>
-                    </CRow>
-                  </CCardHeader>
-                  <CCard class="border-white">
-                    <CCardBody>
-                      <CRow class="mb-4">
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.manufacturer"
-                              type="text"
-                              floating-label="Manufacturer:"
-                          />
-                        </CCol>
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.originCountry"
-                              type="text"
-                              floating-label="Manufacturer country:"
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow class="mb-4">
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.model"
-                              type="text"
-                              floating-label="Model number:"
-                          />
-                        </CCol>
-                        <CCol md="6">
-                          <CFormInput
-                              v-model="dataForm.serialNo"
-                              type="text"
-                              floating-label="Manufacturer Serial No:"
-                          />
-                        </CCol>
-                      </CRow>
-                    </CCardBody>
-                  </CCard>
-                </CCard>
-                <br/>
-                <CCard>
-                  <CCardHeader>
-                    <CRow>
-                      <CCol md="9">
                         <strong>Classification</strong>
                       </CCol>
                     </CRow>
                   </CCardHeader>
                   <CCard class="border-white">
                     <CCardBody>
-                      <CRow>
-                        <CCol md="6" v-for="item in dataFormList">
+                      <CRow class="mb-2">
+                        <CCol class="mb-2" md="6" v-for="item in dataFormList">
                           <CFormInput
                               v-model="dataDetail[item.key]"
                               :floating-label="item.tagName"
                               type="text"
+                              :style="{ fontSize: '12px'}"
                           />
                           <br />
                         </CCol>
@@ -356,9 +373,9 @@
                 </CCard>
                 <br/>
                 <CRow>
-                  <CCol md="3">
+                  <CCol md="2">
                     <CButton  color="secondary" @click="saveAsDraft">
-                      Save as Draft
+                      Draft
                     </CButton>
                   </CCol>
                   <CCol md="2">
@@ -438,6 +455,12 @@ export default {
 
       catalogProfile:'',
       constYearMonth: '',
+      categoryDisplay: {
+        N: 'N-STATIONARY',
+        R: 'R-ROTATING',
+        E: 'E-ELECTRICAL',
+        I: 'I-INSTRUMENT'
+      },
       dataForm: {
         equipmentId: '',
         description: '',
@@ -472,11 +495,13 @@ export default {
       showModalDownload: false,
       dataList: [],
       file: null,
+      fileClass: null,
       fileReference: null,
       issuer: '',
       switchValue: false,
       comment: '',
       keyword: '',
+      category: '',
       dataDetail: {},
       dataFormList: [],
       dataCatalogProfile: [],
@@ -503,6 +528,9 @@ export default {
     handleFileChange(event) {
       this.file = event.target.files[0]
     },
+    handleFileClassChange(event) {
+      this.fileClass = event.target.files[0]
+    },
     handleFileChangeReference(event) {
       this.fileReference = event.target.files[0]
     },
@@ -512,6 +540,33 @@ export default {
       formData.append('file', this.file);
 
       axiosInstance.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+          .then(response => {
+            this.getData(false)
+            this.file = null
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: 'File uploaded success',
+            })
+          })
+          .catch(error => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Something bad happen',
+            })
+          });
+    },
+    uploadFileClass() {
+      LoadIndicator('Uploading file...')
+      const formData = new FormData();
+      formData.append('file', this.fileClass);
+
+      axiosInstance.post('/upload/class', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -579,6 +634,9 @@ export default {
         this.catProfSelected = catprof
       }
     },
+    onChangeCategory() {
+      this.getData(false)
+    },
     getData(isFromPage) {
       if (!isFromPage) {
         this.currentPage = 0
@@ -587,7 +645,8 @@ export default {
       const data = {
         page: this.currentPage,
         size: this.itemsPerPage,
-        search: this.keyword
+        search: this.keyword,
+        category: this.category
       }
 
       axiosInstance.post('/base', data)
@@ -671,7 +730,7 @@ export default {
             Swal.fire({
               icon: 'success',
               title: 'Success',
-              text: 'Data saved as draft!',
+              text: 'Data submitted!',
             })
             this.getData()
             this.clearForm()
@@ -854,7 +913,7 @@ export default {
         const classification = item.classification;
 
         for (const key in classification) {
-          const formattedKey = key.replace(/([A-Z])/g, '-$1').toUpperCase();
+          const formattedKey = key.replace(/([A-Z])/g, '_$1').toUpperCase();
           formattedJson.push({
             equipment: item.equipmentId,
             "Catalog Profile": typeId,

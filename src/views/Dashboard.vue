@@ -14,7 +14,7 @@
 <!--            (-12.4% <CIcon icon="cil-arrow-bottom"/>)-->
 <!--          </span>-->
           </template>
-          <template #title>Total Task Data</template>
+          <template #title>Total Equipment Master </template>
           <template #chart>
             <CChart
                 :data="{
@@ -90,7 +90,7 @@
           <template #value
           >{{dashboardData.totalAssigned}}
           </template>
-          <template #title>Assigned To You</template>
+          <template #title>Total Unfinished Data</template>
           <template #chart>
             <CChart
                 :data="{
@@ -169,7 +169,7 @@
 <!--            (-12.4% <CIcon icon="cil-arrow-bottom"/>)-->
 <!--          </span>-->
           </template>
-          <template #title>Total Completed Task</template>
+          <template #title>Total Completed Data</template>
           <template #chart>
             <CChart
                 :data="{
@@ -249,8 +249,8 @@
             <CTable align="middle" class="mb-0 border" hover responsive>
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell class="text-center" color="primary">Material</CTableHeaderCell>
-                  <CTableHeaderCell class="text-center" color="primary">Manufacturer</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Equipment ID</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Catalog Profile</CTableHeaderCell>
                   <CTableHeaderCell class="text-center" color="primary"
                   >Status
                   </CTableHeaderCell
@@ -260,10 +260,10 @@
               <CTableBody>
                 <CTableRow v-for="item in todoList" :key="item.dataId">
                   <CTableDataCell class="text-center">
-                    <div>{{ item.dataId }}</div>
+                    <div>{{ item.equipmentId }}</div>
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
-                    <div>{{ item.issuer }}</div>
+                    <div>{{ item.typeId }}</div>
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
                     <div>{{ item.status }}</div>
@@ -277,33 +277,29 @@
       </CCol>
       <CCol md="6">
         <CCard>
-          <CCardHeader><strong>Request For Change</strong></CCardHeader>
+          <CCardHeader><strong>Finished Data</strong></CCardHeader>
           <CCardBody>
             <CTable align="middle" class="mb-0 border" hover responsive>
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell class="text-center" color="primary">Material</CTableHeaderCell>
-                  <CTableHeaderCell class="text-center" color="primary">Manufacturer</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Equipment ID</CTableHeaderCell>
+                  <CTableHeaderCell class="text-center" color="primary">Catalog Profile</CTableHeaderCell>
                   <CTableHeaderCell class="text-center" color="primary"
                   >Status
                   </CTableHeaderCell
                   >
-                  <CTableHeaderCell class="text-center" color="primary">Requester</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
                 <CTableRow v-for="item in requestedList" :key="item.dataId">
                   <CTableDataCell class="text-center">
-                    <div>{{ item.dataId }}</div>
+                    <div>{{ item.equipmentId }}</div>
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
-                    <div>{{ item.issuer }}</div>
+                    <div>{{ item.typeId }}</div>
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
                     <div>{{ item.status }}</div>
-                  </CTableDataCell>
-                  <CTableDataCell class="text-center">
-                    <div>{{ item.checkedBy }}</div>
                   </CTableDataCell>
                 </CTableRow>
                 <CTableRow></CTableRow>
