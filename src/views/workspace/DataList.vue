@@ -186,7 +186,7 @@
                         </CCol>
                       </CRow>
                       <CRow class="mb-2">
-                        <CCol md="6">
+                        <CCol md="12">
                           <CFormInput
                               v-model="dataForm.description"
                               type="text"
@@ -194,7 +194,9 @@
                               :style="{ fontSize: '12px'}"
                           />
                         </CCol>
-                        <CCol md="6">
+                      </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="12">
                           <CFormInput
                               v-model="dataForm.identificationNo"
                               type="text"
