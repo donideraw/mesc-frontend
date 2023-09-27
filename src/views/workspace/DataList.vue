@@ -315,6 +315,16 @@
                           />
                         </CCol>
                       </CRow>
+                      <CRow class="mb-2">
+                        <CCol md="12">
+                          <CFormInput
+                              v-model="dataForm.fileURL"
+                              type="text"
+                              floating-label="File URL:"
+                              :style="{ fontSize: '12px'}"
+                          />
+                        </CCol>
+                      </CRow>
                     </CCardBody>
                   </CCard>
                 </CCard>
@@ -335,8 +345,16 @@
                         </CCol>
                       </CRow>
                       <CRow class="mb-4">
+                        <CCol md="12">
+                          <img id="imageContainer" alt="No Image" style="height: 600px; width: 400px;"/>
+                        </CCol>
+                      </CRow>
+                      <CRow class="mb-4">
                         <CCol md="10"></CCol>
                         <CCol md="2" class="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <CButton class="d-flex" color="danger" @click="removeFile" alignment="right">
+                            Remove
+                          </CButton>
                           <CButton class="d-flex" color="primary" @click="uploadFileReference" alignment="right">
                             Upload
                           </CButton>
@@ -418,9 +436,6 @@
             <CCol md="8">
               <CButton @click="exportToExcel(true)" color="primary" variant="outline">Equipment Master
               </CButton>
-              &nbsp;
-<!--            </CCol>-->
-<!--            <CCol md="3">-->
               <CButton @click="exportToExcel(false)" color="primary" variant="outline">Classification
               </CButton>
             </CCol>
@@ -472,6 +487,7 @@ export default {
         constructionYear: '',
         constructionMonth: '',
         filePath: '',
+        fileURL: '',
 
         uom: '',
         location: '',
@@ -533,6 +549,26 @@ export default {
     },
     handleFileChangeReference(event) {
       this.fileReference = event.target.files[0]
+
+      // Assuming "imageContainer" is the ID of the element where you want to display the image
+      const imageContainer = document.getElementById('imageContainer');
+
+      // Check if a file is selected
+      if (this.fileReference) {
+        // Create a URL for the selected file
+        const imageURL = URL.createObjectURL(this.fileReference);
+
+        // Set the src attribute of the image element to the created URL
+        imageContainer.src = imageURL;
+      } else {
+        // Handle the case where no file is selected
+        imageContainer.src = ''; // Clear the image
+      }
+    },
+    removeFile() {
+      this.fileReference = null
+      const imageContainer = document.getElementById('imageContainer');
+      imageContainer.src = null;
     },
     uploadFile() {
       LoadIndicator('Uploading file...')
@@ -615,6 +651,30 @@ export default {
             })
           });
     },
+    getReference(filePath) {
+      const data = {
+        filePath: filePath
+      }
+
+      axiosInstance.post('/reference', data)
+          .then((response) => {
+            this.fileReference = response.data.data
+            const imageContainer = document.getElementById('imageContainer');
+            // Check if a file is selected
+            if (this.fileReference) {
+              const imageURL = `data:image/jpeg;base64,${this.fileReference}`;
+
+// Get the img element by its ID
+              const imgElement = document.getElementById('imageContainer');
+
+// Set the src attribute of the img element to the data URL
+              imgElement.src = imageURL;
+            } else {
+              // Handle the case where no file is selected
+              imageContainer.src = ''; // Clear the image
+            }
+          })
+    },
     getDataCatalogProfile() {
       const data = {
         page: 0,
@@ -682,6 +742,10 @@ export default {
         const catprof = this.dataCatalogProfile.filter(catProf => catProf.typeId == this.catalogProfile)[0]
         this.dataFormList = catprof.attributes
         this.catProfSelected = catprof
+      }
+
+      if (this.dataForm.filePath != '' && this.dataForm.filePath != null) {
+        this.getReference(this.dataForm.filePath)
       }
 
       this.$refs.cardComponent.scrollIntoView({ behavior: 'smooth' });
