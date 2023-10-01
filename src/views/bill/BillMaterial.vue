@@ -28,21 +28,28 @@
         </CRow>
         <CRow class="mb-4">
           <CCol md="3">
-            <CFormSelect v-model="equipmentId">
-              <option value="">Choose Equipment</option>
+            <div class="custom-select">
+              <CFormInput
+                  v-model="search"
+                  type="text"
+                  @input="applySearchFilter"
+                  placeholder="Choose Equipment"
+              />
+            <CFormSelect v-model="equipmentId" :html-size="5">
               <option
-                  v-for="option in equipmentList"
+                  v-for="option in equipmentListReady"
                   :value="option.equipmentId"
                   :key="option"
               >
                 {{ option.equipmentId }}
               </option>
             </CFormSelect>
+            </div>
           </CCol>
           <CCol md="2">
             <CButton color="primary" @click="getMaterials">Show</CButton>
           </CCol>
-          <CCol md="7">
+          <CCol md="5">
             <div v-if="isAdmin()">
               <CButton color="primary" @click="exportToExcel">
                 <CIcon icon="cil-cloud-download" />
@@ -308,6 +315,8 @@ export default {
       equipmentId: '',
       showModal: false,
       dataList: [],
+      equipmentListReady: [],
+      search: '',
       data: {
         id: null,
         equipmentId: '',
@@ -322,10 +331,26 @@ export default {
     }
   },
   methods: {
+    toUpper(data) {
+      return data.toUpperCase()
+    },
+    applySearchFilter(event) {
+      this.search = event.target.value;
+      this.search = this.search.toUpperCase()
+      if (this.search == '') {
+        this.equipmentListReady = this.equipmentList
+      } else {
+        this.equipmentListReady = this.equipmentList.filter((data) =>
+            data.equipmentId.toLowerCase().includes(this.search.toLowerCase())
+        )
+      }
+    },
     getAllEquipment() {
       axiosInstance.get('/base')
           .then((response) => {
             this.equipmentList = response.data.data
+            this.equipmentListReady = this.equipmentList
+            Swal.close()
           })
     },
     getMaterials() {
@@ -503,8 +528,27 @@ export default {
     } else {
       LoadIndicator('Loading data...')
       this.getAllEquipment()
-      Swal.close()
     }
   }
 }
 </script>
+
+<style>
+.custom-select {
+  position: relative;
+}
+
+.custom-select > .c-input {
+  width: 100%;
+}
+
+.custom-select > .c-form-select {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 150px; /* Set a max height for the dropdown to make it scrollable if needed */
+  overflow-y: auto;
+  z-index: 1000; /* Ensure the dropdown appears above other elements */
+}
+</style>
