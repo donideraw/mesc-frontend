@@ -361,7 +361,7 @@ export default {
           text: 'Choose Equipment',
         })
       } else {
-        axiosInstance.get('/bill/' + this.equipmentId)
+        axiosInstance.get('/bill?equipmentId=' + this.equipmentId)
             .then((response) => {
               this.dataList = response.data.data
             })
